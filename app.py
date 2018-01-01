@@ -24,7 +24,7 @@ APPLICATION_NAME = "Restaurant Menu Application"
 
 app.config['GOOGLE_SECRET'] = json.loads(open('client_secrets.json','r').read())['web']['client_secret']
 
-app.config['SECRET_KEY'] = "asfwisv6bg7oesewyt[7jak a9imuhaw5g3q5V<=N/F77g96v385h94v08JKQ$§/QC)=v3795j370<QVNJk$%Q§/)W$<Q§ON=M(W;T2"
+app.config['SECRET_KEY'] = "UaGGGuWqikQaMIZ1JCn6vJXHIK003YBKlqk8sdzn"
 
 app.debug = True
 app.secret_key = app.config.get('SECRET_KEY')
