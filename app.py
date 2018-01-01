@@ -17,19 +17,17 @@ app = Flask(__name__)
 
 oauth = OAuth(app)
 
-CLIENT_ID = json.loads(
+app.config['GOOGLE_ID'] = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
+
 APPLICATION_NAME = "Restaurant Menu Application"
 
-GOOGLE_CLIENT_ID = json.loads(
-    open('client_secrets.json', 'r').read())['web']['client_id']
-
-GOOGLE_CLIENT_SECRET = json.loads(open('client_secrets.json','r').read())['web']['client_secret']
+app.config['GOOGLE_SECRET'] = json.loads(open('client_secrets.json','r').read())['web']['client_secret']
 
 google = oauth.remote_app(
     'google',
-    consumer_key=GOOGLE_CLIENT_ID,
-    consumer_secret=GOOGLE_CLIENT_SECRET,
+    consumer_key=app.config.get('GOOGLE_ID'),
+    consumer_secret=app.config.get('GOOGLE_SECRET'),
     request_token_params={
         'scope': 'email'
     },
