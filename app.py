@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
+from flask import Flask, render_template, request
+from flask import redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Category, Item
@@ -22,7 +23,8 @@ app.config['GOOGLE_ID'] = json.loads(
 
 APPLICATION_NAME = "Restaurant Menu Application"
 
-app.config['GOOGLE_SECRET'] = json.loads(open('client_secrets.json','r').read())['web']['client_secret']
+app.config['GOOGLE_SECRET'] = json.loads(
+    open('client_secrets.json', 'r').read())['web']['client_secret']
 
 app.config['SECRET_KEY'] = "UaGGGuWqikQaMIZ1JCn6vJXHIK003YBKlqk8sdzn"
 
@@ -51,21 +53,25 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
 @app.errorhandler(404)
 def page_not_found(e):
-    return(render_template("error.html",error=404),404)
+    return(render_template("error.html", error=404), 404)
+
 
 @app.errorhandler(410)
 def page_gone(e):
-    return(render_template("error.html",error=410),410)
+    return(render_template("error.html", error=410), 410)
+
 
 @app.errorhandler(403)
 def page_forbidden(e):
-    return(render_template("error.html",error=403),403)
+    return(render_template("error.html", error=403), 403)
+
 
 @app.errorhandler(500)
 def page_server_error(e):
-    return(render_template("error.html",error=500),500)
+    return(render_template("error.html", error=500), 500)
 
 
 @app.route("/")
@@ -73,42 +79,48 @@ def page_server_error(e):
 def index():
     return render_template("home.html")
 
+
 @app.route("/users/list")
 @app.route("/users/list/index")
 def userlist():
     users = session.query(User).all()
-    return render_template("userlist.html",users=users)
+    return render_template("userlist.html", users=users)
 
 
 @app.route('/login')
 @app.route("/login/index")
 def showLogin():
-    return render_template('login.html',ls=login_session)
+    return render_template('login.html', ls=login_session)
+
 
 @app.route("/login/loggedin")
 @app.route("/login/loggedin/index")
 def showLoggedIn():
-    return render_template("loggedin.html",ls=login_session)
+    return render_template("loggedin.html", ls=login_session)
+
 
 @app.route('/login/google')
 @app.route('/login/google/index')
 def showGoogleLogin():
-    return google.authorize(callback=url_for('googleAuthorized', _external=True))
+    return google.authorize(
+        callback=url_for('googleAuthorized',
+                         _external=True)
+    )
+
 
 @app.route('/login/google/authorized')
 @app.route('/login/google/authorized/index')
 def googleAuthorized():
-    try:
-        resp = google.authorized_response()
-    except OAuthException:
-        return jsonify({"error":500,"location":"AuthNode","description":"Google returned a invalid response"})
+    resp = google.authorized_response()
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
             request.args['error_description']
         )
     print((resp['access_token'], '')[0])
-    google_json = requests.get('https://www.googleapis.com/oauth2/v1/userinfo?access_token='+(resp['access_token'], '')[0]).json()
+    google_json = requests.get(
+        'https://www.googleapis.com/oauth2/v1/userinfo'\
+        '?access_token='+ (resp['access_token'], '')[0]).json()
     login_session["provider"] = "google"
     login_session["token"] = (resp['access_token'], '')[0]
     login_session["username"] = google_json["name"]
@@ -116,7 +128,6 @@ def googleAuthorized():
     login_session["email"] = google_json["email"]
     checkUser(login_session)
     return(redirect(url_for("showLoggedIn"), code=302))
-
 
 
 # User Helper Functions
@@ -143,8 +154,9 @@ def getUserID(email):
     except:
         return None
 
+
 def checkUser(ls):
-    if getUserID(ls["email"]) == None:
+    if getUserID(ls["email"]) is None:
         return createUser(ls)
     else:
         return getUserID(ls["email"])
@@ -162,7 +174,7 @@ def logout():
         flash("You have been logged out!")
         return redirect(url_for("showLogin"), code=302)
     else:
-        return render_template("page.html",content="You are not logged in!")
+        return render_template("page.html", content="You are not logged in!")
 
 
 if __name__ == '__main__':
