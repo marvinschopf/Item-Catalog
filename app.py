@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, jsonify, url_for, f
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem, User
-from flask import session
+from flask import session as login_session
 import random
 import string
 from oauth2client.client import flow_from_clientsecrets
@@ -87,6 +87,7 @@ def googleAuthorized():
             request.args['error_reason'],
             request.args['error_description']
         )
+    print((resp['access_token'], ''))
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
     return jsonify({"data": me.data})
