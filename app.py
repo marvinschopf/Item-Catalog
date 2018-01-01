@@ -11,9 +11,11 @@ import httplib2
 import json
 from flask import make_response
 import requests
-from flask_oauthlib.client import *
+from flask_oauthlib.client import OAuth
 
 app = Flask(__name__)
+
+oauth = OAuth(app)
 
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
