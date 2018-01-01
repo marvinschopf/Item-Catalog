@@ -76,7 +76,7 @@ def showGoogleLogin():
     return google.authorize(callback=url_for('authorized', _external=True))
 
 @app.route('/login/google/authorized')
-@app.rotue('/login/google/authorized/index')
+@app.route('/login/google/authorized/index')
 def authorized():
     resp = google.authorized_response()
     if resp is None:
