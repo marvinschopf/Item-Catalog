@@ -98,9 +98,10 @@ def googleAuthorized():
     print((resp['access_token'], '')[0])
     google_json = requests.get('https://www.googleapis.com/oauth2/v1/userinfo?access_token='+(resp['access_token'], '')[0]).json()
     login_session["provider"] = "google"
+    login_session["token"] = (resp['access_token'], '')[0]
     login_session["name"] = google_json["name"]
     login_session["picture"] = google_json["picture"]
-    return(login_session["name"])
+    return(redirect(url_for("showLoggedIn"), code=302))
 
 
 
