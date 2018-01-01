@@ -1,0 +1,6 @@
+Flask
+requests>=2.12
+gunicorn
+sqlalchemy
+httplib2
+oauth2client
