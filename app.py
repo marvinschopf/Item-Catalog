@@ -67,7 +67,13 @@ def page_forbidden(e):
 def page_server_error(e):
     return(render_template("error.html",error=500),500)
 
-# Create anti-forgery state token
+
+@app.route("/")
+@app.route("/index")
+def index():
+    return render_template("home.html")
+
+
 @app.route('/login')
 @app.route("/login/index")
 def showLogin():
