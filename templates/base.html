@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <meta charset="utf-8">
+      {% if title %}
+      <title>{{ title }} - MarvNet</title>
+      {% else %}
+      <title>MarvNet</title>
+      {% endif %}
+      <link rel="stylesheet" href="/static/mdb/css/bootstrap.min.css">
+      <link rel="stylesheet" href="/static/mdb/css/mdb.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script src="/static/mdb/js/popper.min.js"></script>
+      <script src="/static/mdb/js/bootstrap.min.js"></script>
+      <script src="/static/mdb/js/mdb.min.js"></script>
+      <script src="//apis.google.com/js/platform.js?onload=start"></script>
+    </head>
+    <body>
+      <!--Navbar-->
+        <nav class="navbar navbar-expand-lg navbar-dark indigo">
+
+            <!-- Navbar brand -->
+            <a class="navbar-brand" href="/index">Item-Catalog</a>
+
+            <!-- Collapse button -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+
+            <!-- Collapsible content -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                <!-- Links -->
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Login</a>
+                    </li>
+
+                </ul>
+            </div>
+            <!-- Collapsible content -->
+
+        </nav>
+        <br><br>
+        <div class="container">
+          {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>
