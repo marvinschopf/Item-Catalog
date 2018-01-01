@@ -2,7 +2,11 @@
 
 {% block content %}
 <h2>Login</h2>
+{% if not ls["token"] %}
 <button onclick="javascript:location.href='/login/google';" href="javascript:void(0);">Login using Google</button>
 <button onclick="javascript:location.href='/login/facebook';" href="javascript:void(0);">Login using Facebook</button>
 <button onclick="javascript:location.href='/login/github';" href="javascript:void(0);">Login using GitHub</button>
+{% else %}
+<h3>You are already logged in!</h3>
+{% endif %}
 {% endblock %}

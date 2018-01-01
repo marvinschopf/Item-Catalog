@@ -71,7 +71,7 @@ def page_server_error(e):
 @app.route('/login')
 @app.route("/login/index")
 def showLogin():
-    return render_template('login.html')
+    return render_template('login.html',ls=login_session)
 
 @app.route("/login/loggedin")
 @app.route("/login/loggedin/index")
