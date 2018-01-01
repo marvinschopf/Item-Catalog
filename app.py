@@ -134,26 +134,18 @@ def getUserID(email):
 
 
 # Disconnect based on provider
-@app.route('/disconnect')
-def disconnect():
-    if 'provider' in login_session:
-        if login_session['provider'] == 'google':
-            gdisconnect()
-            del login_session['gplus_id']
-            del login_session['access_token']
-        if login_session['provider'] == 'facebook':
-            fbdisconnect()
-            del login_session['facebook_id']
-        del login_session['username']
-        del login_session['email']
-        del login_session['picture']
-        del login_session['user_id']
-        del login_session['provider']
-        flash("You have successfully been logged out.")
-        return redirect(url_for('showRestaurants'))
+@app.route('/logout')
+@app.route('/logout/index')
+def logout():
+    if(login_session["token"]):
+        del login_sesion["token"]
+        del login_session["username"]
+        del login_session["provider"]
+        del login_session["picture"]
+        flash("You have been logged out!")
+        return redirect(url_for("showLogin"), code=302)
     else:
-        flash("You were not logged in")
-        return redirect(url_for('showRestaurants'))
+        return render_template("page.html",content="You are not logged in!")
 
 
 if __name__ == '__main__':
