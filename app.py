@@ -101,6 +101,7 @@ def googleAuthorized():
     login_session["token"] = (resp['access_token'], '')[0]
     login_session["username"] = google_json["name"]
     login_session["picture"] = google_json["picture"]
+    login_session["email"] = google_json["email"]
     checkUser(login_session)
     return(redirect(url_for("showLoggedIn"), code=302))
 
