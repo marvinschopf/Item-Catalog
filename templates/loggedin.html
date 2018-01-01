@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 {% if ls["token"] %}
-<h3>You are logged in!</h3>
+<h2>{{ ls["username"] }}</h2>
+{% if ls["picture"] %}
+<img src="{{ ls["picture"] }}">
+{% endif %}
 {% else %}
 <h2><i>Oops</i>...</h2>
 <h3>You are not logged in!</h3>
