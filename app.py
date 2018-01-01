@@ -81,7 +81,10 @@ def showGoogleLogin():
 @app.route('/login/google/authorized')
 @app.route('/login/google/authorized/index')
 def googleAuthorized():
-    resp = google.authorized_response()
+    try:
+        resp = google.authorized_response()
+    except OAuthException:
+        return jsonify({"error":500,"location":"AuthNode","description":"Google returned a invalid response"})
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
