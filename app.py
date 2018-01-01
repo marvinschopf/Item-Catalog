@@ -24,6 +24,13 @@ APPLICATION_NAME = "Restaurant Menu Application"
 
 app.config['GOOGLE_SECRET'] = json.loads(open('client_secrets.json','r').read())['web']['client_secret']
 
+app.config['SECRET_KEY'] = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(24))
+
+app.debug = True
+app.secret_key = app.config.get('SECRET_KEY')
+
+print("SECRET_KEY: "+app.config.get('SECRET_KEY'))
+
 google = oauth.remote_app(
     'google',
     consumer_key=app.config.get('GOOGLE_ID'),
