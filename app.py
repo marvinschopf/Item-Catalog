@@ -22,7 +22,7 @@ APPLICATION_NAME = "Restaurant Menu Application"
 GOOGLE_CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 
-GOOGLE_CLIENT_SECRET = json.loads(open('client_secrets.json','r').read()['web']['client_secret'])
+GOOGLE_CLIENT_SECRET = json.loads(open('client_secrets.json','r').read())['web']['client_secret']
 
 google = oauth.remote_app(
     'google',
