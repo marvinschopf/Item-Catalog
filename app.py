@@ -138,7 +138,7 @@ def getUserID(email):
 @app.route('/logout/index')
 def logout():
     if(login_session["token"]):
-        del login_sesion["token"]
+        del login_session["token"]
         del login_session["username"]
         del login_session["provider"]
         del login_session["picture"]
