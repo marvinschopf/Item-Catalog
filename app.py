@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, jsonify, url_for, f
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem, User
-from flask import session as login_session
+from flask import session
 import random
 import string
 from oauth2client.client import flow_from_clientsecrets
