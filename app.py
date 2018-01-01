@@ -11,12 +11,32 @@ import httplib2
 import json
 from flask import make_response
 import requests
+from flask_oauthlib.client import OAuth
 
 app = Flask(__name__)
 
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Restaurant Menu Application"
+
+GOOGLE_CLIENT_ID = json.loads(
+    open('client_secrets.json', 'r').read())['web']['client_id']
+
+GOOGLE_CLIENT_SECRET = json.loads(open('client_secrets.json','r').read['web']['client_secret'])
+
+google = oauth.remote_app(
+    'google',
+    consumer_key=GOOGLE_CLIENT_ID,
+    consumer_secret=GOOGLE_CLIENT_SECRET,
+    request_token_params={
+        'scope': 'email'
+    },
+    base_url='https://www.googleapis.com/oauth2/v1/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+)
 
 
 # Connect to Database and create database session
@@ -48,6 +68,23 @@ def page_server_error(e):
 def showLogin():
     return render_template('login.html')
 
+@app.route('/login/google')
+@app.route('/login/google/index')
+def showGoogleLogin():
+    return google.authorize(callback=url_for('authorized', _external=True))
+
+@app.route('/login/google/authorized')
+@app.rotue('/login/google/authorized/index')
+def authorized():
+    resp = google.authorized_response()
+    if resp is None:
+        return 'Access denied: reason=%s error=%s' % (
+            request.args['error_reason'],
+            request.args['error_description']
+        )
+    session['google_token'] = (resp['access_token'], '')
+    me = google.get('userinfo')
+    return jsonify({"data": me.data})
 
 
 
