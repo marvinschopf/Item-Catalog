@@ -75,6 +75,7 @@ def index():
 
 @app.route("/users/list")
 @app.route("/users/list/index")
+def userlist():
     users = session.query(User).all()
     return render_template("userlist.html",users=users)
 
