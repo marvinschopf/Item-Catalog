@@ -87,9 +87,11 @@ def googleAuthorized():
             request.args['error_reason'],
             request.args['error_description']
         )
-    print((resp['access_token'], ''))
-    session['google_token'] = (resp['access_token'], '')
-    me = google.get('userinfo')
+    print((resp['access_token'], '')[0])
+    google_json = requests.get('https://www.googleapis.com/oauth2/v1/userinfo?access_token='+(resp['access_token'], '')[0]).json()
+    login_session["provider"] = "google"
+    login_session["name"] = "name"
+    flash(login_session["name"])
     return jsonify({"data": me.data})
 
 
