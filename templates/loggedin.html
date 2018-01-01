@@ -3,7 +3,7 @@
 {% if ls["token"] %}
 <h2>{{ ls["username"] }}</h2>
 {% if ls["picture"] %}
-<img src="{{ ls["picture"] }}">
+<img src="{{ ls["picture"] }}" alt="Picture of {{ ls["username"] }}" title="Picture of {{ ls["username"] }}">
 {% endif %}
 {% else %}
 <h2><i>Oops</i>...</h2>
