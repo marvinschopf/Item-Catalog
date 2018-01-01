@@ -101,6 +101,7 @@ def googleAuthorized():
     login_session["token"] = (resp['access_token'], '')[0]
     login_session["username"] = google_json["name"]
     login_session["picture"] = google_json["picture"]
+    checkUser(login_session)
     return(redirect(url_for("showLoggedIn"), code=302))
 
 
@@ -129,8 +130,11 @@ def getUserID(email):
     except:
         return None
 
-
-
+def checkUser(ls):
+    if getUserID(ls["email"]) == None:
+        return createUser(ls)
+    else:
+        return getUserID(ls["email"])
 
 
 # Disconnect based on provider
