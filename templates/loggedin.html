@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+{% if ls["token"] %}
+<h3>You are logged in!</h3>
+{% else %}
+<h2><i>Oops</i>...</h2>
+<h3>You are not logged in!</h3>
+<h4><a href="/login/index">Change that!</a></h4>
+{% endif %}
+{% endblock %}

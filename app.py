@@ -51,7 +51,6 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-
 @app.errorhandler(404)
 def page_not_found(e):
     return(render_template("error.html",error=404),404)
@@ -70,8 +69,14 @@ def page_server_error(e):
 
 # Create anti-forgery state token
 @app.route('/login')
+@app.route("/login/index")
 def showLogin():
     return render_template('login.html')
+
+@app.route("/login/loggedin")
+@app.route("/login/loggedin/index")
+def showLoggedIn():
+    return render_template("loggedin.html",ls=login_session)
 
 @app.route('/login/google')
 @app.route('/login/google/index')
