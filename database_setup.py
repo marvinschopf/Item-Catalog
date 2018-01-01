@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -39,6 +39,7 @@ class Item(Base):
     user = relationship(User)
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
+    created = Column(DateTime)
 
     @property
     def serialize(self):

@@ -73,6 +73,11 @@ def page_server_error(e):
 def index():
     return render_template("home.html")
 
+@app.route("/users/list")
+@app.route("/users/list/index")
+    users = session.query(User).all()
+    return render_template("userlist.html",users=users)
+
 
 @app.route('/login')
 @app.route("/login/index")
