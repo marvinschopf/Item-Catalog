@@ -76,11 +76,11 @@ def showLogin():
 @app.route('/login/google')
 @app.route('/login/google/index')
 def showGoogleLogin():
-    return google.authorize(callback=url_for('google/authorized', _external=True))
+    return google.authorize(callback=url_for('googleAuthorized', _external=True))
 
 @app.route('/login/google/authorized')
 @app.route('/login/google/authorized/index')
-def authorized():
+def googleAuthorized():
     resp = google.authorized_response()
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
