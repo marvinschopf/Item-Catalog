@@ -248,7 +248,7 @@ def facebookAuthorized():
     else:
         login_session["picture"] = me.data["picture"]
 
-    login_session["name"] = me.data["name"]
+    login_session["username"] = me.data["name"]
     login_session["link"] = "https://facebook.com/"+me.data["id"]
     login_session["user_id"] = checkUser(login_session)
     return redirect("/login/loggedin",code=302)
