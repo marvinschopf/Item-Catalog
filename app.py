@@ -189,7 +189,10 @@ def showFacebookLogin():
 @app.route("/login/github/authorized")
 @app.route("/login/github/authorized/index")
 def githubAuthorized():
-    resp = github.authorized_response()
+    try:
+        resp = github.authorized_response()
+    except OAuthException:
+        return render_template("page.html",content="An error occured while authorizing with <b>GitHub</b>!")
     if resp is None or resp.get('access_token') is None:
         return 'Access denied: reason=%s error=%s resp=%s' % (
             request.args['error'],
@@ -217,7 +220,10 @@ def githubAuthorized():
 @app.route('/login/facebook/authorized')
 @app.route('/login/facebook/authorized/index')
 def facebookAuthorized():
-    resp = facebook.authorized_response()
+    try:
+        resp = facebook.authorized_response()
+    except OAuthException:
+        return render_template("page.html",content="An error occured while authorizing with <b>Facebook</b>!")
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
@@ -258,7 +264,10 @@ def facebookAuthorized():
 @app.route('/login/google/authorized')
 @app.route('/login/google/authorized/index')
 def googleAuthorized():
-    resp = google.authorized_response()
+    try:
+        resp = google.authorized_response()
+    except OAuthException:
+        return render_template("page.html",content="Cannot authorize with <b>Google</b>!")
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
