@@ -145,11 +145,18 @@ def categoriesJson():
     categories = session.query(Category)
     return jsonify(Categories=[c.serialize for c in categories])
 
+
 @app.route("/api/category/<int:category_id>.json")
 @app.route("/api/category/<int:category_id>")
 def getCategoryAPI(category_id):
     CatalogItems = session.query(Item).filter_by(category_id=category_id)
     return jsonify(Items=[i.serialize for i in CatalogItems])
+
+@app.route("/api/item/<int:item_id>.json")
+@app.route("/api/item/<int:item_id>")
+def getItemAPI(item_id):
+    SItem = session.query(Item).filter_by(id=item_id).one()
+    return jsonify(SItem.serialize)
 
 
 @app.route('/login')
@@ -199,7 +206,7 @@ def githubAuthorized():
     try:
         resp = github.authorized_response()
     except OAuthException:
-        return render_template("page.html",content="An error occured while authorizing with GitHub!")
+        return render_template("page.html", content="An error occured while authorizing with GitHub!")
     if resp is None or resp.get('access_token') is None:
         return 'Access denied: reason=%s error=%s resp=%s' % (
             request.args['error'],
@@ -230,7 +237,7 @@ def facebookAuthorized():
     try:
         resp = facebook.authorized_response()
     except OAuthException:
-        return render_template("page.html",content="An error occured while authorizing with Facebook!")
+        return render_template("page.html", content="An error occured while authorizing with Facebook!")
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
@@ -245,7 +252,6 @@ def facebookAuthorized():
     login_session["email"] = ""
     login_session["picture"] = "/static/blank_user.gif"
 
-    
     try:
         me.data["email"]
     except KeyError:
@@ -253,7 +259,6 @@ def facebookAuthorized():
     else:
         login_session["email"] = me.data["email"]
 
-    
     try:
         me.data["picture"]
     except KeyError:
@@ -264,8 +269,7 @@ def facebookAuthorized():
     login_session["username"] = me.data["name"]
     login_session["link"] = "https://facebook.com/"+me.data["id"]
     login_session["user_id"] = checkUser(login_session)
-    return redirect("/login/loggedin",code=302)
-    
+    return redirect("/login/loggedin", code=302)
 
 
 @app.route('/login/google/authorized')
@@ -274,7 +278,7 @@ def googleAuthorized():
     try:
         resp = google.authorized_response()
     except OAuthException:
-        return render_template("page.html",content="Cannot authorize with Google!")
+        return render_template("page.html", content="Cannot authorize with Google!")
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
