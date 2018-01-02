@@ -128,8 +128,11 @@ def page_server_error(e):
 
 @app.route("/")
 @app.route("/index")
+@app.route("/feed")
+@app.route("/feed/index")
 def index():
-    return render_template("home.html")
+    latest = session.query(Item).order_by(desc(created)).limit(10)
+    return render_template("feed.html",latest=latest)
 
 
 @app.route("/users/list")

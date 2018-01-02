@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<script>
+
+</script>
+<h2>Latest</h2>
+<ul>
+	{% for item in latest %}
+		<li>{{ item.name }} <i>({{ item.category.name }})</i></li>
+	{% endfor %}
+</ul>
+{% endblock %}
