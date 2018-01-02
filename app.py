@@ -235,7 +235,7 @@ def facebookAuthorized():
     
     try:
         me.data["email"]
-    except NameError:
+    except KeyError:
         login_session["email"] = ""
     else:
         login_session["email"] = me.data["email"]
@@ -243,7 +243,7 @@ def facebookAuthorized():
     
     try:
         me.data["picture"]
-    except NameError:
+    except KeyError:
         login_session["picture"] = "/static/blank_user.gif"
     else:
         login_session["picture"] = me.data["picture"]
