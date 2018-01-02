@@ -196,84 +196,74 @@ def showFacebookLogin():
 @app.route("/login/github/authorized/index")
 def githubAuthorized():
     try:
-        login_session["token"]
-    except KeyError:
-        return render_template("page.html",content="You are already logged-in!")
+        resp = github.authorized_response()
+    except OAuthException:
+        return render_template("page.html",content="An error occured while authorizing with GitHub!")
+    if resp is None or resp.get('access_token') is None:
+        return 'Access denied: reason=%s error=%s resp=%s' % (
+            request.args['error'],
+            request.args['error_description'],
+            resp
+        )
+    login_session["token"] = (resp['access_token'], '')
+    me = github.get('user')
+    login_session["provider"] = "github"
+    if(me.data["email"] is None):
+        login_session["email"] = ""
     else:
-        try:
-            resp = github.authorized_response()
-        except OAuthException:
-            return render_template("page.html",content="An error occured while authorizing with GitHub!")
-        if resp is None or resp.get('access_token') is None:
-            return 'Access denied: reason=%s error=%s resp=%s' % (
-                request.args['error'],
-                request.args['error_description'],
-                resp
-            )
-        login_session["token"] = (resp['access_token'], '')
-        me = github.get('user')
-        login_session["provider"] = "github"
-        if(me.data["email"] is None):
+        if(len(me.data["email"]) < 1):
             login_session["email"] = ""
         else:
-            if(len(me.data["email"]) < 1):
-                login_session["email"] = ""
-            else:
-                login_session["email"] = me.data["email"]
+            login_session["email"] = me.data["email"]
 
-        login_session["username"] = me.data["name"]
-        login_session["link"] = me.data["html_url"]
-        login_session["picture"] = me.data["avatar_url"]
-        login_session["user_id"] = checkUser(login_session)
-        return redirect("/login/loggedin", code=302)
+    login_session["username"] = me.data["name"]
+    login_session["link"] = me.data["html_url"]
+    login_session["picture"] = me.data["avatar_url"]
+    login_session["user_id"] = checkUser(login_session)
+    return redirect("/login/loggedin", code=302)
 
 
 @app.route('/login/facebook/authorized')
 @app.route('/login/facebook/authorized/index')
 def facebookAuthorized():
     try:
-        login_session["token"]
+        resp = facebook.authorized_response()
+    except OAuthException:
+        return render_template("page.html",content="An error occured while authorizing with Facebook!")
+    if resp is None:
+        return 'Access denied: reason=%s error=%s' % (
+            request.args['error_reason'],
+            request.args['error_description']
+        )
+    if isinstance(resp, OAuthException):
+        return 'Access denied: %s' % resp.message
+
+    login_session["provider"] = "facebook"
+    login_session["token"] = (resp['access_token'], '')
+    me = facebook.get('/me')
+    login_session["email"] = ""
+    login_session["picture"] = "/static/blank_user.gif"
+
+    
+    try:
+        me.data["email"]
     except KeyError:
-        return render_template("page.html",content="You are already logged-in!")
-    else:
-        try:
-            resp = facebook.authorized_response()
-        except OAuthException:
-            return render_template("page.html",content="An error occured while authorizing with Facebook!")
-        if resp is None:
-            return 'Access denied: reason=%s error=%s' % (
-                request.args['error_reason'],
-                request.args['error_description']
-            )
-        if isinstance(resp, OAuthException):
-            return 'Access denied: %s' % resp.message
-
-        login_session["provider"] = "facebook"
-        login_session["token"] = (resp['access_token'], '')
-        me = facebook.get('/me')
         login_session["email"] = ""
+    else:
+        login_session["email"] = me.data["email"]
+
+    
+    try:
+        me.data["picture"]
+    except KeyError:
         login_session["picture"] = "/static/blank_user.gif"
+    else:
+        login_session["picture"] = me.data["picture"]
 
-        
-        try:
-            me.data["email"]
-        except KeyError:
-            login_session["email"] = ""
-        else:
-            login_session["email"] = me.data["email"]
-
-        
-        try:
-            me.data["picture"]
-        except KeyError:
-            login_session["picture"] = "/static/blank_user.gif"
-        else:
-            login_session["picture"] = me.data["picture"]
-
-        login_session["username"] = me.data["name"]
-        login_session["link"] = "https://facebook.com/"+me.data["id"]
-        login_session["user_id"] = checkUser(login_session)
-        return redirect("/login/loggedin",code=302)
+    login_session["username"] = me.data["name"]
+    login_session["link"] = "https://facebook.com/"+me.data["id"]
+    login_session["user_id"] = checkUser(login_session)
+    return redirect("/login/loggedin",code=302)
     
 
 
@@ -281,37 +271,32 @@ def facebookAuthorized():
 @app.route('/login/google/authorized/index')
 def googleAuthorized():
     try:
-        login_session["token"]
-    except KeyError:
-        return render_template("page.html",content="You are already logged-in!")
+        resp = google.authorized_response()
+    except OAuthException:
+        return render_template("page.html",content="Cannot authorize with Google!")
+    if resp is None:
+        return 'Access denied: reason=%s error=%s' % (
+            request.args['error_reason'],
+            request.args['error_description']
+        )
+    login_session["provider"] = "google"
+    login_session["token"] = (resp['access_token'], '')
+    # checkUser(login_session)
+    #login_session["user_id"] = getUserID(login_session["email"])
+    me = google.get('userinfo')
+    if(me.data["email"] is None):
+        login_session["email"] = ""
     else:
-        try:
-            resp = google.authorized_response()
-        except OAuthException:
-            return render_template("page.html",content="Cannot authorize with Google!")
-        if resp is None:
-            return 'Access denied: reason=%s error=%s' % (
-                request.args['error_reason'],
-                request.args['error_description']
-            )
-        login_session["provider"] = "google"
-        login_session["token"] = (resp['access_token'], '')
-        # checkUser(login_session)
-        #login_session["user_id"] = getUserID(login_session["email"])
-        me = google.get('userinfo')
-        if(me.data["email"] is None):
+        if(len(me.data["email"]) < 1):
             login_session["email"] = ""
         else:
-            if(len(me.data["email"]) < 1):
-                login_session["email"] = ""
-            else:
-                login_session["email"] = me.data["email"]
+            login_session["email"] = me.data["email"]
 
-        login_session["username"] = me.data["name"]
-        login_session["link"] = me.data["link"]
-        login_session["picture"] = me.data["picture"]
-        login_session["user_id"] = checkUser(login_session)
-        return redirect("/login/loggedin", code=302)
+    login_session["username"] = me.data["name"]
+    login_session["link"] = me.data["link"]
+    login_session["picture"] = me.data["picture"]
+    login_session["user_id"] = checkUser(login_session)
+    return redirect("/login/loggedin", code=302)
 
 
 # User Helper Functions
