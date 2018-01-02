@@ -140,7 +140,7 @@ def googleAuthorized():
         )
     login_session["provider"] = "google"
     login_session["token"] = (resp['access_token'], '')[0]
-    checkUser(login_session)
+    #checkUser(login_session)
     login_session["user_id"] = getUserID(login_session["email"])
     me = google.get('userinfo')
     return jsonify({"data": me.data})
