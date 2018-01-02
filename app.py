@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from flask import redirect, jsonify, url_for, flash
-from sqlalchemy import create_engine, asc
+from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Category, Item
 import lotsofitems
