@@ -174,6 +174,17 @@ def showGithubLogin():
     )
 
 
+@app.route("/login/facebook")
+@app.route("/login/facebook/index")
+def showFacebookLogin():
+    callback = url_for(
+        'facebookAuthorized',
+        next=request.args.get('next') or request.referrer or None,
+        _external=True
+    )
+    return facebook.authorize(callback=callback)
+
+
 @app.route("/login/github/authorized")
 @app.route("/login/github/authorized/index")
 def githubAuthorized():
@@ -200,6 +211,24 @@ def githubAuthorized():
     login_session["picture"] = me.data["avatar_url"]
     login_session["user_id"] = checkUser(login_session)
     return redirect("/login/loggedin", code=302)
+
+
+@app.route('/login/facebook/authorized')
+@app.route('/login/facebook/authorized/index')
+def facebookAuthorized():
+    resp = facebook.authorized_response()
+    if resp is None:
+        return 'Access denied: reason=%s error=%s' % (
+            request.args['error_reason'],
+            request.args['error_description']
+        )
+    if isinstance(resp, OAuthException):
+        return 'Access denied: %s' % resp.message
+
+    login_session["provider"] = "facebook"
+    login_session["token"] = (resp['access_token'], '')
+    me = facebook.get('/me')
+    return jsonify(data=me.data)
 
 
 @app.route('/login/google/authorized')
