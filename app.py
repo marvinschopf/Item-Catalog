@@ -148,7 +148,7 @@ def categoriesJson():
 @app.route("/api/category/<int:category_id>.json")
 @app.route("/api/category/<int:category_id>")
 def getCategoryAPI(category_id):
-    CatalogItems = session.query(Item).filter_by(category_id=catalog_id)
+    CatalogItems = session.query(Item).filter_by(category_id=category_id)
     return jsonify(Items=[i.serialize for i in CatalogItems])
 
 
