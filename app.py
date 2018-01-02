@@ -144,6 +144,12 @@ def categoriesJson():
     categories = session.query(Category)
     return jsonify(Categories=[c.serialize for c in categories])
 
+@app.route("/api/category/<int:category_id>.json")
+@app.route("/api/category/<int:category_id>")
+def getCategoryAPI(category_id):
+    CatalogItems = session.query(Item).filter_by(category_id=catalog_id)
+    return jsonify(Items=[i.serialize for i in CatalogItems])
+
 
 @app.route('/login')
 @app.route("/login/index")
