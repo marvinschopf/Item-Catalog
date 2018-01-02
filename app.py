@@ -189,6 +189,9 @@ def showFacebookLogin():
 @app.route("/login/github/authorized")
 @app.route("/login/github/authorized/index")
 def githubAuthorized():
+    if(login_session["token"]):
+        return render_template("page.html",content="You are already logged-in!")
+       
     try:
         resp = github.authorized_response()
     except OAuthException:
@@ -220,6 +223,9 @@ def githubAuthorized():
 @app.route('/login/facebook/authorized')
 @app.route('/login/facebook/authorized/index')
 def facebookAuthorized():
+    if(login_session["token"]):
+        return render_template("page.html",content="You are already logged-in!")
+       
     try:
         resp = facebook.authorized_response()
     except OAuthException:
@@ -264,6 +270,9 @@ def facebookAuthorized():
 @app.route('/login/google/authorized')
 @app.route('/login/google/authorized/index')
 def googleAuthorized():
+    if(login_session["token"]):
+        return render_template("page.html",content="You are already logged-in!")
+
     try:
         resp = google.authorized_response()
     except OAuthException:
