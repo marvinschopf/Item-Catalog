@@ -12,7 +12,7 @@ import httplib2
 import json
 from flask import make_response
 import requests
-from flask_oauthlib.client import OAuth
+from flask_oauthlib.client import OAuth, OAuthException
 
 app = Flask(__name__)
 
