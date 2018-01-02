@@ -230,12 +230,15 @@ def facebookAuthorized():
     login_session["token"] = (resp['access_token'], '')
     me = facebook.get('/me')
     login_session["email"] = ""
-    login_session["picture"] = "/static/blank_user.gif" 
-    if(me.data["email"] is not None):
-        login_session["email"] = me.data["email"]
+    login_session["picture"] = "/static/blank_user.gif"
 
-    if(me.data["picture"] is not None):
-        login_session["picture"] = me.data["picture"]
+    if(me.data["email"]): 
+        if(me.data["email"] is not None):
+            login_session["email"] = me.data["email"]
+
+    if(me.data["picture"]):
+        if(me.data["picture"] is not None):
+            login_session["picture"] = me.data["picture"]
 
     login_session["name"] = me.data["name"]
     login_session["link"] = "https://facebook.com/"+me.data["id"]
