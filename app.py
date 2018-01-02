@@ -127,6 +127,7 @@ def googleAuthorized():
     login_session["picture"] = google_json["picture"]
     login_session["email"] = google_json["email"]
     checkUser(login_session)
+    login_session["user_id"] = getUserID(login_session["email"])
     return(redirect(url_for("showLoggedIn"), code=302))
 
 
@@ -167,6 +168,7 @@ def checkUser(ls):
 @app.route('/logout/index')
 def logout():
     if(login_session["token"]):
+        del login_session["user_id"]
         del login_session["token"]
         del login_session["username"]
         del login_session["provider"]
