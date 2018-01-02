@@ -152,11 +152,12 @@ def googleAuthorized():
     #checkUser(login_session)
     #login_session["user_id"] = getUserID(login_session["email"])
     me = google.get('userinfo')
-    login_session["email"] = me.data.email
+    #login_session["email"] = me.data.email
     login_session["username"] = me.data.name
     login_session["user_id"] = checkUser(login_session["email"])
     login_session["picture"] = me.data.picture
-    return redirect("/login/loggedin",code=302)
+    #return redirect("/login/loggedin",code=302)
+    return jsonify(data=me.data)
 
 
 
