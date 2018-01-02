@@ -137,6 +137,25 @@ def showGoogleLogin():
                          _external=True)
     )
 
+@app.route("/login/github")
+@app.route("/login/github/index")
+def showGithubLogin():
+    return github.authorize(callback=url_for('githubAuthorized', _external=True))
+
+@app.route("/login/github/authorized")
+@app.route("/login/github/authorized/index")
+def githubAuthorized():
+    resp = github.authorized_response()
+    if resp is None or resp.get('access_token') is None:
+        return 'Access denied: reason=%s error=%s resp=%s' % (
+            request.args['error'],
+            request.args['error_description'],
+            resp
+        )
+    login_session["token"] = (resp['access_token'], '')
+    me = github.get('user')
+    return jsonify(me.data)
+
 
 @app.route('/login/google/authorized')
 @app.route('/login/google/authorized/index')
