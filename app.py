@@ -177,7 +177,14 @@ def googleAuthorized():
     #checkUser(login_session)
     #login_session["user_id"] = getUserID(login_session["email"])
     me = google.get('userinfo')
-    login_session["email"] = me.data["email"]
+    if(me.data["email"] is None):
+        login_session["email"] = ""
+    else:
+        if(len(me.data["email"]) < 1):
+            login_session["email"] = ""
+        else:
+            login_session["email"] = me.data["email"]
+            
     login_session["username"] = me.data["name"]
     login_session["link"] = me.data["link"]
     login_session["picture"] = me.data["picture"]
