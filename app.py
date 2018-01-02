@@ -160,7 +160,7 @@ def githubAuthorized():
     login_session["link"] = me.data["html_url"]
     login_session["picture"] = me.data["avatar_url"]
     login_session["user_id"] = checkUser(login_session)
-    return jsonify(me.data)
+    return redirect("/login/loggedin",code=302)
 
 
 @app.route('/login/google/authorized')
