@@ -192,7 +192,7 @@ def githubAuthorized():
     try:
         resp = github.authorized_response()
     except OAuthException:
-        return render_template("page.html",content="An error occured while authorizing with <b>GitHub</b>!")
+        return render_template("page.html",content="An error occured while authorizing with GitHub!")
     if resp is None or resp.get('access_token') is None:
         return 'Access denied: reason=%s error=%s resp=%s' % (
             request.args['error'],
@@ -223,7 +223,7 @@ def facebookAuthorized():
     try:
         resp = facebook.authorized_response()
     except OAuthException:
-        return render_template("page.html",content="An error occured while authorizing with <b>Facebook</b>!")
+        return render_template("page.html",content="An error occured while authorizing with Facebook!")
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
@@ -267,7 +267,7 @@ def googleAuthorized():
     try:
         resp = google.authorized_response()
     except OAuthException:
-        return render_template("page.html",content="Cannot authorize with <b>Google</b>!")
+        return render_template("page.html",content="Cannot authorize with Google!")
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
