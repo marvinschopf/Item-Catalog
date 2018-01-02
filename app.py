@@ -26,11 +26,15 @@ APPLICATION_NAME = "Restaurant Menu Application"
 app.config['GOOGLE_SECRET'] = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_secret']
 
-app.config['GITHUB_ID'] = json.loads(open('gh_client_secrets.json','r').read())['client_id']
-app.config['GITHUB_SECRET'] = json.loads(open('gh_client_secrets.json','r').read())['client_secret']
+app.config['GITHUB_ID'] = json.loads(
+    open('gh_client_secrets.json', 'r').read())['client_id']
+app.config['GITHUB_SECRET'] = json.loads(
+    open('gh_client_secrets.json', 'r').read())['client_secret']
 
-app.config['FACEBOOK_ID'] = json.loads(open('fb_client_secrets.json','r').read())['web']['app_id']
-app.config['FACEBOOK_SECRET'] = json.loads(open('fb_client_secrets.json','r').read())['web']['app_secret']
+app.config['FACEBOOK_ID'] = json.loads(
+    open('fb_client_secrets.json', 'r').read())['web']['app_id']
+app.config['FACEBOOK_SECRET'] = json.loads(
+    open('fb_client_secrets.json', 'r').read())['web']['app_secret']
 
 app.config['SECRET_KEY'] = "UaGGGuWqikQaMIZ1JCn6vJXHIK003YBKlqk8sdzn"
 
@@ -76,9 +80,12 @@ facebook = oauth.remote_app(
 )
 
 # OAUTH helper functions
+
+
 @google.tokengetter
 def get_google_oauth_token():
     return login_session["token"]
+
 
 @github.tokengetter
 def get_github_oauth_token():
@@ -125,6 +132,7 @@ def userlist():
     users = session.query(User).all()
     return render_template("userlist.html", users=users)
 
+
 @app.route("/api/categories.json")
 @app.route("/api/categories")
 def categoriesJson():
@@ -152,10 +160,15 @@ def showGoogleLogin():
                          _external=True)
     )
 
+
 @app.route("/login/github")
 @app.route("/login/github/index")
 def showGithubLogin():
-    return github.authorize(callback=url_for('githubAuthorized', _external=True))
+    return github.authorize(
+        callback=url_for('githubAuthorized', 
+            _external=True)
+        )
+
 
 @app.route("/login/github/authorized")
 @app.route("/login/github/authorized/index")
@@ -182,7 +195,7 @@ def githubAuthorized():
     login_session["link"] = me.data["html_url"]
     login_session["picture"] = me.data["avatar_url"]
     login_session["user_id"] = checkUser(login_session)
-    return redirect("/login/loggedin",code=302)
+    return redirect("/login/loggedin", code=302)
 
 
 @app.route('/login/google/authorized')
@@ -196,7 +209,7 @@ def googleAuthorized():
         )
     login_session["provider"] = "google"
     login_session["token"] = (resp['access_token'], '')
-    #checkUser(login_session)
+    # checkUser(login_session)
     #login_session["user_id"] = getUserID(login_session["email"])
     me = google.get('userinfo')
     if(me.data["email"] is None):
@@ -211,10 +224,7 @@ def googleAuthorized():
     login_session["link"] = me.data["link"]
     login_session["picture"] = me.data["picture"]
     login_session["user_id"] = checkUser(login_session)
-    return redirect("/login/loggedin",code=302)
-
-
-
+    return redirect("/login/loggedin", code=302)
 
 
 # User Helper Functions
