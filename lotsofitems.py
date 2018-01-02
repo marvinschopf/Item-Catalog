@@ -10,4 +10,9 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-session.add(Category(name="Hockey",description="Items needed to play hockey"))
+category1 = Category(name="Hockey",description="Items needed to play hockey")
+session.add(category1)
+
+
+
+session.commit()
