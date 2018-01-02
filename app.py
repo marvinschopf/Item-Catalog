@@ -60,6 +60,15 @@ github = oauth.remote_app(
     authorize_url='https://github.com/login/oauth/authorize'
 )
 
+# OAUTH helper functions
+@google.tokengetter
+def get_google_oauth_token():
+    return login_session["token"]
+
+@github.tokengetter
+def get_github_oauth_token():
+    return login_session["token"]
+
 
 # Connect to Database and create database session
 engine = create_engine('sqlite:///itemcatalog.db')
@@ -139,21 +148,14 @@ def googleAuthorized():
             request.args['error_description']
         )
     login_session["provider"] = "google"
-    login_session["token"] = (resp['access_token'], '')[0]
+    login_session["token"] = (resp['access_token'], '')
     #checkUser(login_session)
     #login_session["user_id"] = getUserID(login_session["email"])
     me = google.get('userinfo')
     return jsonify({"data": me.data})
 
 
-# OAUTH helper functions
-@google.tokengetter
-def get_google_oauth_token():
-    return login_session["token"]
 
-@github.tokengetter
-def get_github_oauth_token():
-    return login_session["token"]
 
 
 # User Helper Functions
