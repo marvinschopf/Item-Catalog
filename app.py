@@ -29,6 +29,9 @@ app.config['GOOGLE_SECRET'] = json.loads(
 app.config['GITHUB_ID'] = json.loads(open('gh_client_secrets.json','r').read())['client_id']
 app.config['GITHUB_SECRET'] = json.loads(open('gh_client_secrets.json','r').read())['client_secret']
 
+app.config['FACEBOOK_ID'] = json.loads(open('fb_client_secrets.json','r').read())['web']['app_id']
+app.config['FACEBOOK_SECRET'] = json.loads(open('fb_client_secrets.json','r').read())['web']['app_secret']
+
 app.config['SECRET_KEY'] = "UaGGGuWqikQaMIZ1JCn6vJXHIK003YBKlqk8sdzn"
 
 app.debug = True
@@ -58,6 +61,18 @@ github = oauth.remote_app(
     access_token_method='POST',
     access_token_url='https://github.com/login/oauth/access_token',
     authorize_url='https://github.com/login/oauth/authorize'
+)
+
+facebook = oauth.remote_app(
+    'facebook',
+    consumer_key=app.config.get('FACEBOOK_ID'),
+    consumer_secret=app.config.get('FACEBOOK_SECRET'),
+    request_token_params={'scope': 'email'},
+    base_url='https://graph.facebook.com',
+    request_token_url=None,
+    access_token_url='/oauth/access_token',
+    access_token_method='GET',
+    authorize_url='https://www.facebook.com/dialog/oauth'
 )
 
 # OAUTH helper functions
@@ -162,7 +177,7 @@ def githubAuthorized():
             login_session["email"] = ""
         else:
             login_session["email"] = me.data["email"]
-            
+
     login_session["username"] = me.data["name"]
     login_session["link"] = me.data["html_url"]
     login_session["picture"] = me.data["avatar_url"]
