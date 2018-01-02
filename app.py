@@ -157,8 +157,7 @@ def googleAuthorized():
     login_session["link"] = me.data["link"]
     login_session["picture"] = me.data["picture"]
     login_session["user_id"] = checkUser(login_session)
-    #return redirect("/login/loggedin",code=302)
-    return jsonify(data=me.data)
+    return redirect("/login/loggedin",code=302)
 
 
 
@@ -206,6 +205,7 @@ def logout():
         del login_session["username"]
         del login_session["provider"]
         del login_session["picture"]
+        del login_session["link"]
         flash("You have been logged out!")
         return redirect(url_for("showLogin"), code=302)
     else:
