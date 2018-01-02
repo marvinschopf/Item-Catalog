@@ -91,6 +91,10 @@ def get_google_oauth_token():
 def get_github_oauth_token():
     return login_session["token"]
 
+@facebook.tokengetter
+def get_facebook_oauth_token():
+    return login_session["token"]
+
 
 # Connect to Database and create database session
 engine = create_engine('sqlite:///itemcatalog.db')
@@ -165,9 +169,9 @@ def showGoogleLogin():
 @app.route("/login/github/index")
 def showGithubLogin():
     return github.authorize(
-        callback=url_for('githubAuthorized', 
-            _external=True)
-        )
+        callback=url_for('githubAuthorized',
+                         _external=True)
+    )
 
 
 @app.route("/login/github/authorized")
