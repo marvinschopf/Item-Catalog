@@ -155,7 +155,14 @@ def githubAuthorized():
     login_session["token"] = (resp['access_token'], '')
     me = github.get('user')
     login_session["provider"] = "github"
-    login_session["email"] = me.data["email"]
+    if(me.data["email"] is None):
+        login_session["email"] = ""
+    else:
+        if(len(me.data["email"]) < 1):
+            login_session["email"] = ""
+        else:
+            login_session["email"] = me.data["email"]
+            
     login_session["username"] = me.data["name"]
     login_session["link"] = me.data["html_url"]
     login_session["picture"] = me.data["avatar_url"]
@@ -184,7 +191,7 @@ def googleAuthorized():
             login_session["email"] = ""
         else:
             login_session["email"] = me.data["email"]
-            
+
     login_session["username"] = me.data["name"]
     login_session["link"] = me.data["link"]
     login_session["picture"] = me.data["picture"]
