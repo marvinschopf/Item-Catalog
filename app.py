@@ -26,6 +26,9 @@ APPLICATION_NAME = "Restaurant Menu Application"
 app.config['GOOGLE_SECRET'] = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_secret']
 
+app.config['GITHUB_ID'] = json.loads(open('gh_client_secrets.json','r').read())['client_id']
+app.config['GITHUB_SECRET'] = json.loads(open('gh_client_secrets.json','r').read())['client_secret']
+
 app.config['SECRET_KEY'] = "UaGGGuWqikQaMIZ1JCn6vJXHIK003YBKlqk8sdzn"
 
 app.debug = True
@@ -43,6 +46,18 @@ google = oauth.remote_app(
     access_token_method='POST',
     access_token_url='https://accounts.google.com/o/oauth2/token',
     authorize_url='https://accounts.google.com/o/oauth2/auth',
+)
+
+github = oauth.remote_app(
+    'github',
+    consumer_key=app.config.get('GITHUB_ID'),
+    consumer_secret=app.config.get('GITHUB_SECRET'),
+    request_token_params={'scope': 'user:email'},
+    base_url='https://api.github.com/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://github.com/login/oauth/access_token',
+    authorize_url='https://github.com/login/oauth/authorize'
 )
 
 
