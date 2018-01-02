@@ -86,6 +86,12 @@ def userlist():
     users = session.query(User).all()
     return render_template("userlist.html", users=users)
 
+@app.route("/api/categories.json")
+@app.route("/api/categories")
+def categoriesJson():
+    categories = session.query(Category)
+    return jsonify(Categories=[c.serialize for c in categories])
+
 
 @app.route('/login')
 @app.route("/login/index")
