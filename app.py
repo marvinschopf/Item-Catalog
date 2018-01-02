@@ -200,7 +200,7 @@ def githubAuthorized():
     except KeyError:
         return render_template("page.html",content="You are already logged-in!")
     else:
-       try:
+        try:
             resp = github.authorized_response()
         except OAuthException:
             return render_template("page.html",content="An error occured while authorizing with GitHub!")
