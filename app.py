@@ -91,6 +91,7 @@ def get_google_oauth_token():
 def get_github_oauth_token():
     return login_session["token"]
 
+
 @facebook.tokengetter
 def get_facebook_oauth_token():
     return login_session["token"]
@@ -228,7 +229,19 @@ def facebookAuthorized():
     login_session["provider"] = "facebook"
     login_session["token"] = (resp['access_token'], '')
     me = facebook.get('/me')
-    return jsonify(data=me.data)
+    login_session["email"] = ""
+    login_session["picture"] = "/static/blank_user.gif" 
+    if(me.data["email"] is not None):
+        login_session["email"] = me.data["email"]
+
+    if(me.data["picture"] is not None):
+        login_session["picture"] = me.data["picture"]
+
+    login_session["name"] = me.data["name"]
+    login_session["link"] = "https://facebook.com/"+me.data["id"]
+    login_session["user_id"] = checkUser(login_session)
+    return redirect("/login/loggedin",code=302)
+    
 
 
 @app.route('/login/google/authorized')
