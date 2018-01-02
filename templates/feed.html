@@ -6,7 +6,7 @@
 <h2>Latest</h2>
 <ul>
 	{% for item in latest %}
-		<li>{{ item.name }} <i>({{ item.category.name }})</i></li>
+		<li>{{ item.name }} <i>({{ item.category.name }})</i> <u>({{ item.id }})</u></li>
 	{% endfor %}
 </ul>
 {% endblock %}
