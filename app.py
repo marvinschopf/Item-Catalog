@@ -6,7 +6,6 @@ from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from database_setup import Base, User, Category, Item
-import lotsofitems
 from flask import session as login_session
 import random
 import string
