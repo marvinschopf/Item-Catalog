@@ -4,11 +4,11 @@
 <div class="container">
 	<form action="" method="POST">
 		<div class="form-group">
-			<label for="title"><b>Name:</b></label>
+			<label for="title"><h3><b><i>Name:</b></i></h3></label>
 			<input type="text" class="form-text form-control" name="title" id="title" value="{{ item.name }}" required>
 		</div>
 		<div class="form-group">
-			<label for="description"><b><i>Description:</i></b></label>
+			<label for="description"><h3><b><i>Description:</i></b></h3></label>
 			<textarea id="description" name="description" class="md-textarea form-control" required>{{ item.description }}</textarea>
 		</div>
 		<input type="submit" class="btn btn-primary" value="Edit">
