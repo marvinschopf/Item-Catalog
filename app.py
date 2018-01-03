@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from flask import redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 from database_setup import Base, User, Category, Item
 import lotsofitems
 from flask import session as login_session
@@ -166,9 +167,13 @@ def getItemAPI(item_id):
 @app.route("/category/<int:category_id>")
 @app.route("/category/<int:category_id>/index")
 def showCategory(category_id):
-    Items = session.query(Item).filter_by(category_id=category_id)
-    CategoryMeta = session.query(Category).filter_by(id=category_id).one()
-    return render_template("category.html", items=Items, category=CategoryMeta, login_session=login_session)
+    try:    
+        Items = session.query(Item).filter_by(category_id=category_id)
+        CategoryMeta = session.query(Category).filter_by(id=category_id).one()
+    except NoResultFound:
+        return render_template("page.html",content="No results found!")
+    else:
+        return render_template("category.html", items=Items, category=CategoryMeta, login_session=login_session)
 
 
 @app.route('/login')
