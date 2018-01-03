@@ -199,7 +199,8 @@ def getItemAPI(item_id):
 @app.route("/category/<int:category_id>/index")
 def showCategory(category_id):
     try:
-        Items = session.query(Item).filter_by(category_id=category_id).order_by(Item.id)
+        Items = session.query(Item).filter_by(
+            category_id=category_id).order_by(Item.id)
         CategoryMeta = session.query(Category).filter_by(id=category_id).one()
     except NoResultFound:
         flash("The requested item was not found!")
@@ -253,7 +254,8 @@ def editItem(category_id, item_id):
                     session.commit()
                     flash("The item has been edited!")
                     return redirect("/category/" +
-                                    str(category_id)+"/"+str(item_id), code=302)
+                                    str(category_id)+"/"+str(item_id),
+                                    code=302)
                 else:
                     return render_template("edit-item.html",
                                            item=SearchedItem,
@@ -265,7 +267,7 @@ def editItem(category_id, item_id):
         else:
             flash("You are not logged in!")
             return redirect("/category/"+str(category_id)+"/"+str(item_id),
-                code=302)
+                            code=302)
 
 
 @app.route("/category/<int:category_id>/<int:item_id>/delete")
@@ -285,44 +287,54 @@ def deleteItem(category_id, item_id):
                 session.delete(DeletedItem)
                 session.commit()
                 flash("The item has been deleted!")
-                return redirect("/category/"+str(category_id), code=302)
+                return redirect("/category/"+str(category_id),
+                                code=302)
             else:
                 flash("You are not authorized!")
-                return redirect("/category/"+str(category_id)+"/"+str(item_id),code=302)
+                return redirect("/category/"+str(category_id)+"/"+str(item_id),
+                                code=302)
         else:
             flash("You are not authorized!")
-            return redirect("/category/"+str(category_id)+"/"+str(item_id),code=302)
+            return redirect("/category/"+str(category_id)+"/"+str(item_id),
+                            code=302)
 
 
-@app.route("/category/<int:category_id>/new",methods=["POST","GET"])
-@app.route("/category/<int:category_id>/new/index",methods=["POST","GET"])
+@app.route("/category/<int:category_id>/new", methods=["POST", "GET"])
+@app.route("/category/<int:category_id>/new/index", methods=["POST", "GET"])
 def newItem(category_id):
     if(request.method == "POST"):
         if(isLoggedIn(login_session)):
             if request.form["name"] and request.form["description"]:
-                NewItem = Item(name=request.form["name"],description=request.form["description"],user_id=login_session["user_id"],category_id=category_id)
+                NewItem = Item(name=request.form["name"],
+                               description=request.form["description"],
+                               user_id=login_session["user_id"],
+                               category_id=category_id)
                 session.add(NewItem)
                 session.commit()
                 flash("Your new item has been created!")
-                return redirect("/category/"+str(category_id)+"/"+str(NewItem.id),code=302) 
+                return redirect("/category/" +
+                                str(category_id)+"/"+str(NewItem.id),
+                                code=302)
             else:
                 flash("Please submit all the required data!")
-                return redirect("/category/"+str(category_id)+"/new",code=302)
+                return redirect("/category/"+str(category_id)+"/new", code=302)
         else:
             flash("You are not logged in!")
-            return redirect("/category/"+str(category_id),code=302)
+            return redirect("/category/"+str(category_id), code=302)
     else:
         if(isLoggedIn(login_session)):
             try:
                 Cat = session.query(Category).filter_by(id=category_id).one()
             except NoResultFound:
                 flash("The requested category could not be found!")
-                return redirect("/feed",code=302)
+                return redirect("/feed", code=302)
             else:
-                return render_template("new-item.html",category=Cat,login_session=login_session)
+                return render_template("new-item.html",
+                    category=Cat,
+                    login_session=login_session)
         else:
             flash("You are not logged in!")
-            return redirect("/category/"+str(category_id),code=302)
+            return redirect("/category/"+str(category_id), code=302)
 
 
 @app.route('/login')
