@@ -243,7 +243,7 @@ def githubAuthorized():
     login_session["token"] = (resp['access_token'], '')
     me = github.get('user')
     login_session["provider"] = "github"
-    login_session["email"] = "github-"+me.data["username"]+"@users.item-catalog"
+    login_session["email"] = "github-"+""+"@users.item-catalog"
     #if(me.data["email"] is None):
         #login_session["email"] = ""
     #else:
