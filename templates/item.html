@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ item.name }}</h2>
+<b>Creator:</b> {{ item.user.name }}<br>
+<b>Created:</b> {{ item.created }}<br>
+<b>Category:</b> <a href="/category/{{ item.category.id }}">{{ item.category.name }}</a><br>
+<hr><br>
+<b>Description:</b>
+<p>{{ item.description }}</p>
+{% endblock %}

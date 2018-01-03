@@ -176,6 +176,16 @@ def showCategory(category_id):
         return render_template("category.html", items=Items, category=CategoryMeta, login_session=login_session)
 
 
+@app.route("/category/<int:category_id>/<int:item_id>")
+@app.route("/category/<int:category_id>/<int:item_id>/index")
+def showItem(category_id,item_id):
+    try:
+        Item = session.query(Item).filter_by(category_id=category_id,id=item_id)
+    except NoResultFound:
+        return render_template("page.html",content="No results found!",login_session=login_session)
+    else:
+        return render_template("item.html",item=Item,login_session=login_session)
+
 @app.route('/login')
 @app.route("/login/index")
 def showLogin():
