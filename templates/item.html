@@ -9,6 +9,6 @@
 <textarea disabled>{{ item.description }}</textarea>
 {% if login_session["user_id"] == item.user_id %}
 <hr>
-<a href="/category/{{ item.category.id }}/{{ item.id }}/delete">Delete</a> || <a href="/category/{{ item.category.id }}/{{ item.id }}/edit/">Edit</a>
+<a href="/category/{{ item.category.id }}/{{ item.id }}/delete">Delete</a> || <a href="/category/{{ item.category.id }}/{{ item.id }}/edit">Edit</a>
 {% endif %}
 {% endblock %}
