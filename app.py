@@ -15,6 +15,7 @@ import json
 from flask import make_response
 import requests
 from flask_oauthlib.client import OAuth, OAuthException
+import html
 
 app = Flask(__name__)
 
@@ -185,6 +186,29 @@ def showItem(category_id,item_id):
         return render_template("page.html",content="No results found!",login_session=login_session)
     else:
         return render_template("item.html",item=SearchedItem,login_session=login_session)
+
+@app.route("/category/<int:category_id>/<int:item_id>/edit")
+@app.route("/category/<int:category_id>/<int:item_id>/edit/index")
+@app.route("/category/<int:category_id>/<int:item_id>/index/edit")
+@app.route("/category/<int:category_id>/<int:item_id>/index/edit/index")
+def editItem(category_id,item_id):
+    try:
+        SearchedItem = session.query(Item).filter_by(category_id=category_id,id=item_id).one()
+    except NoResultFound:
+        return render_template("page.html",content="Requested Item not found!",login_session=login_session)
+    else:
+        if(login_session["user_id"] == SearchedItem.user_id):
+            if(request.method == "POST" or request.method == "post"):
+                if(request.form["name"] and request.form["description"]):
+                    SearchedItem.name = html.escape(request.form["name"])
+                    SearchedItem.description = html.escape(request.form["description"])
+                    return redirect("/category/"+str(category_id)+"/"+str(item_id),code=302)
+                else:
+                    return render_template("page.html",content="Not all required data has been submitted!")
+            else:
+                return render_template("edit-item.html",item=SearchedItem)
+        else:
+            return render_template("page.html",content="This is not your item!")
 
 @app.route('/login')
 @app.route("/login/index")
