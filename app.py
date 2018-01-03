@@ -237,9 +237,9 @@ def editItem(category_id, item_id):
                     SearchedItem.name = html.escape(request.form["name"])
                     SearchedItem.description = html.escape(
                         request.form["description"])
-                    return redirect("/categor"
-                                    "y/"+str(category_id)+"/"+str(item_id),
-                                    code=302)
+                    session.add(SearchedItem)
+                    session.commit()
+                    return redirect("/category/"+str(category_id)+"/"+str(item_id),code=302)
                 else:
                     return render_template("page.html",
                                            content="Not all required data"
