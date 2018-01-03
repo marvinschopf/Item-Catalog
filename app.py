@@ -191,7 +191,7 @@ def showItem(category_id,item_id):
 @app.route("/category/<int:category_id>/<int:item_id>/edit/index")
 @app.route("/category/<int:category_id>/<int:item_id>/index/edit")
 @app.route("/category/<int:category_id>/<int:item_id>/index/edit/index")
-def editItem(category_id,item_id,methods=["POST","GET","post","get"]):
+def editItem(category_id,item_id,methods=["POST","GET"]):
     try:
         SearchedItem = session.query(Item).filter_by(category_id=category_id,id=item_id).one()
     except NoResultFound:
