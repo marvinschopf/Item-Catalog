@@ -245,9 +245,8 @@ def editItem(category_id, item_id):
                                        item=SearchedItem,
                                        login_session=login_session)
         else:
-            return render_template("page.html",
-                                   content="This is not your item!",
-                                   login_session=login_session)
+            flash("This is not your item!")
+            return redirect("/category/"+str(category_id)+"/"+str(item_id),code=302)
 
 
 @app.route('/login')
