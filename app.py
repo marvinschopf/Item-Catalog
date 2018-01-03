@@ -216,10 +216,14 @@ def showItem(category_id, item_id):
                                login_session=login_session)
 
 
-@app.route("/category/<int:category_id>/<int:item_id>/edit", methods=["POST", "GET"])
-@app.route("/category/<int:category_id>/<int:item_id>/edit/index", methods=["POST", "GET"])
-@app.route("/category/<int:category_id>/<int:item_id>/index/edit", methods=["POST", "GET"])
-@app.route("/category/<int:category_id>/<int:item_id>/index/edit/index", methods=["POST", "GET"])
+@app.route("/category/<int:category_id>/<int:item_id>/edit",
+           methods=["POST", "GET"])
+@app.route("/category/<int:category_id>/<int:item_id>/edit/index",
+           methods=["POST", "GET"])
+@app.route("/category/<int:category_id>/<int:item_id>/index/edit",
+           methods=["POST", "GET"])
+@app.route("/category/<int:category_id>/<int:item_id>/index/edit/index",
+           methods=["POST", "GET"])
 def editItem(category_id, item_id):
     try:
         SearchedItem = session.query(Item).filter_by(
@@ -237,14 +241,16 @@ def editItem(category_id, item_id):
                 session.add(SearchedItem)
                 session.commit()
                 flash("The item has been edited!")
-                return redirect("/category/"+str(category_id)+"/"+str(item_id), code=302)
+                return redirect("/category/" +
+                                str(category_id)+"/"+str(item_id), code=302)
             else:
                 return render_template("edit-item.html",
                                        item=SearchedItem,
                                        login_session=login_session)
         else:
             flash("This is not your item!")
-            return redirect("/category/"+str(category_id)+"/"+str(item_id), code=302)
+            return redirect("/category/"+str(category_id)+"/"+str(item_id),
+                            code=302)
 
 
 @app.route('/login')
@@ -299,14 +305,14 @@ def githubAuthorized():
         resp = github.authorized_response()
     except OAuthException:
         flash("An error occured while authorizing with GitHub!")
-        return redirect("/login",code=302)
+        return redirect("/login", code=302)
     if resp is None or resp.get('access_token') is None:
         flash('Access denied: reason=%s error=%s resp=%s' % (
             request.args['error'],
             request.args['error_description'],
             resp
         ))
-        return redirect("/login",code=302)
+        return redirect("/login", code=302)
     login_session["token"] = (resp['access_token'], '')
     me = github.get('user')
     login_session["provider"] = "github"
@@ -336,14 +342,14 @@ def facebookAuthorized():
         resp = facebook.authorized_response()
     except OAuthException:
         flash("An error occured while authorizing with Facebook!")
-        return redirect("/login",code=302)
+        return redirect("/login", code=302)
     if resp is None:
         flash('Access denied: reason=%s error=%s resp=%s' % (
             request.args['error'],
             request.args['error_description'],
             resp
         ))
-        return redirect("/login",code=302)
+        return redirect("/login", code=302)
     if isinstance(resp, OAuthException):
         return 'Access denied: %s' % resp.message
 
@@ -381,14 +387,14 @@ def googleAuthorized():
         resp = google.authorized_response()
     except OAuthException:
         flash("An error occured while authorizing with Google!")
-        return redirect("/login",code=302)
+        return redirect("/login", code=302)
     if resp is None:
         flash('Access denied: reason=%s error=%s resp=%s' % (
             request.args['error'],
             request.args['error_description'],
             resp
         ))
-        return redirect("/login",code=302)
+        return redirect("/login", code=302)
     login_session["provider"] = "google"
     login_session["token"] = (resp['access_token'], '')
     # checkUser(login_session)
@@ -457,7 +463,7 @@ def logout():
         return redirect(url_for("showLogin"), code=302)
     else:
         flash("You are not logged in, so you can't log out!")
-        return redirect("/login",code=302)
+        return redirect("/login", code=302)
 
 
 if __name__ == '__main__':
