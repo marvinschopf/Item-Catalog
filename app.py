@@ -21,8 +21,6 @@ app = Flask(__name__)
 
 oauth = OAuth(app)
 
-login_session["token"] = False
-
 app.config['GOOGLE_ID'] = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 
@@ -86,12 +84,10 @@ facebook = oauth.remote_app(
 
 
 # <UTIL>
-def isset(var):
+def isLoggedIn(ls):
     try:
-        var
+        ls["token"]
     except KeyError:
-        return False
-    except NameError:
         return False
     else:
         return True
@@ -246,7 +242,7 @@ def editItem(category_id, item_id):
         flash("The requested item can't be found!")
         return redirect("/", code=302)
     else:
-        if(login_session["token"]):
+        if(isLoggedIn(login_session)):
             if(login_session["user_id"] == SearchedItem.user_id):
                 if(request.method == "POST"):
                     if(request.form["name"]):
@@ -284,7 +280,7 @@ def deleteItem(category_id, item_id):
         flash("The requested item could not be found!")
         return redirect("/feed", code=302)
     else:
-        if(login_session["token"]):
+        if(isLoggedIn(login_session)):
             if(login_session["user_id"] == DeletedItem.user_id):
                 session.delete(DeletedItem)
                 session.commit()
@@ -302,7 +298,7 @@ def deleteItem(category_id, item_id):
 @app.route("/category/<int:category_id>/new/index",methods=["POST","GET"])
 def newItem(category_id):
     if(request.method == "POST"):
-        if(login_session["token"]):
+        if(isLoggedIn(login_session)):
             if request.form["name"] and request.form["description"]:
                 NewItem = Item(name=request.form["name"],description=request.form["description"],user_id=login_session["user_id"],category_id=category_id)
                 session.add(NewItem)
@@ -316,7 +312,7 @@ def newItem(category_id):
             flash("You are not logged in!")
             return redirect("/category/"+str(category_id),code=302)
     else:
-        if(login_session["token"]):
+        if(isLoggedIn(login_session)):
             try:
                 Cat = session.query(Category).filter_by(id=category_id).one()
             except NoResultFound:
