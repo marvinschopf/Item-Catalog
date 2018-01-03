@@ -232,25 +232,30 @@ def editItem(category_id, item_id):
         flash("The requested item can't be found!")
         return redirect("/", code=302)
     else:
-        if(login_session["user_id"] == SearchedItem.user_id):
-            if(request.method == "POST"):
-                if(request.form["name"]):
-                    SearchedItem.name = request.form["name"]
-                if(request.form["description"]):
-                    SearchedItem.description = request.form["description"]
-                session.add(SearchedItem)
-                session.commit()
-                flash("The item has been edited!")
-                return redirect("/category/" +
-                                str(category_id)+"/"+str(item_id), code=302)
+        if(login_session["token"]):
+            if(login_session["user_id"] == SearchedItem.user_id):
+                if(request.method == "POST"):
+                    if(request.form["name"]):
+                        SearchedItem.name = request.form["name"]
+                    if(request.form["description"]):
+                        SearchedItem.description = request.form["description"]
+                    session.add(SearchedItem)
+                    session.commit()
+                    flash("The item has been edited!")
+                    return redirect("/category/" +
+                                    str(category_id)+"/"+str(item_id), code=302)
+                else:
+                    return render_template("edit-item.html",
+                                           item=SearchedItem,
+                                           login_session=login_session)
             else:
-                return render_template("edit-item.html",
-                                       item=SearchedItem,
-                                       login_session=login_session)
+                flash("This is not your item!")
+                return redirect("/category/"+str(category_id)+"/"+str(item_id),
+                                code=302)
         else:
-            flash("This is not your item!")
+            flash("You are not logged in!")
             return redirect("/category/"+str(category_id)+"/"+str(item_id),
-                            code=302)
+                code=302)
 
 
 @app.route("/category/<int:category_id>/<int:item_id>/delete")
@@ -269,6 +274,37 @@ def deleteItem(category_id, item_id):
         session.commit()
         flash("The item has been deleted!")
         return redirect("/category/"+str(category_id), code=302)
+
+
+@app.route("/category/<int:category_id>/new",methods=["POST","GET"])
+@app.route("/category/<int:category_id>/new/index",methods=["POST","GET"])
+def newItem(category_id):
+    if(request.method == "POST"):
+        if(login_session["token"]):
+            if request.form["name"] and request.form["description"]:
+                NewItem = Item(name=request.form["name"],description=request.form["description"],user_id=login_session["user_id"])
+                session.add(NewItem)
+                session.commit()
+                flash("Your new item has been created!")
+                return redirect("/category/"+str(category_id)+"/"+str(NewItem.id),code=302) 
+            else:
+                flash("Please submit all the required data!")
+                return redirect("/category/"+str(category_id)+"/new",code=302)
+        else:
+            flash("You are not logged in!")
+            return redirect("/category/"+str(category_id),code=302)
+    else:
+        if(login_session["token"]):
+            try:
+                Cat = session.query(Category).filter_by(category_id).one()
+            except NoResultFound:
+                flash("The requested category could not be found!")
+                return redirect("/feed",code=302)
+            else:
+                return render_template("new-item.html",category=Cat,login_session=login_session)
+        else:
+            flash("You are not logged in!")
+            return redirect("/category/"+str(category_id),code=302)
 
 
 @app.route('/login')
