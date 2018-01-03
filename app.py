@@ -171,7 +171,7 @@ def showCategory(category_id):
         Items = session.query(Item).filter_by(category_id=category_id)
         CategoryMeta = session.query(Category).filter_by(id=category_id).one()
     except NoResultFound:
-        return render_template("page.html",content="No results found!")
+        return render_template("page.html",content="No results found!",login_session=login_session)
     else:
         return render_template("category.html", items=Items, category=CategoryMeta, login_session=login_session)
 
