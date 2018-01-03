@@ -132,7 +132,8 @@ def page_server_error(e):
 @app.route("/feed/index")
 def index():
     latest = session.query(Item).order_by(desc(Item.id)).limit(10)
-    return render_template("feed.html",latest=latest)
+    categories = session.query(Category).order_by(Category.id)
+    return render_template("feed.html",latest=latest,categories=categories)
 
 
 @app.route("/users/list")

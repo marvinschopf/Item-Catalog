@@ -3,10 +3,24 @@
 <script>
 
 </script>
-<h2>Latest</h2>
-<ul>
-	{% for item in latest %}
-		<li>{{ item.name }} <i>({{ item.category.name }})</i> ({{ item.id }})</li>
-	{% endfor %}
-</ul>
+<div class="container">
+	<div class="row">
+		<div class="col">
+			<h2>Categories</h2>
+			<ul>
+			{% for cat in categories %}
+				<li><a href="/category/{{ cat.name }}">{{ cat.name }}</a></li>
+			{% endfor %}
+			</ul>
+		</div>
+		<div class="col">
+			<h2>Latest Items</h2>
+			<ul>
+				{% for item in latest %}
+					<li><a href="/category/{{ item.category.name }}/{{ item.name }}"><b>{{ item.name }}</b> <i>({{ item.category.name }})</i></a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
 {% endblock %}
