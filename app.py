@@ -218,11 +218,11 @@ def showItem(category_id, item_id):
                                login_session=login_session)
 
 
-@app.route("/category/<int:category_id>/<int:item_id>/edit")
-@app.route("/category/<int:category_id>/<int:item_id>/edit/index")
-@app.route("/category/<int:category_id>/<int:item_id>/index/edit")
-@app.route("/category/<int:category_id>/<int:item_id>/index/edit/index")
-def editItem(category_id, item_id, methods=["POST", "GET"]):
+@app.route("/category/<int:category_id>/<int:item_id>/edit", methods=["POST", "GET"])
+@app.route("/category/<int:category_id>/<int:item_id>/edit/index", methods=["POST", "GET"])
+@app.route("/category/<int:category_id>/<int:item_id>/index/edit", methods=["POST", "GET"])
+@app.route("/category/<int:category_id>/<int:item_id>/index/edit/index", methods=["POST", "GET"])
+def editItem(category_id, item_id):
     try:
         SearchedItem = session.query(Item).filter_by(
             category_id=category_id, id=item_id).one()
