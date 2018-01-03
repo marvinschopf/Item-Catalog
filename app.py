@@ -336,8 +336,8 @@ def newItem(category_id):
             flash("You are not logged in!")
             return redirect("/category/"+str(category_id), code=302)
 
-@app.route("/category/new")
-@app.route("/category/new/index")
+@app.route("/category/new", methods=["POST","GET"])
+@app.route("/category/new/index",methods=["POST","GET"])
 def createCategory():
     if(isLoggedIn(login_session)):
         if(request.method == "POST"):
