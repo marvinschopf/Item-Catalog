@@ -296,7 +296,7 @@ def newItem(category_id):
     else:
         if(login_session["token"]):
             try:
-                Cat = session.query(Category).filter_by(category_id).one()
+                Cat = session.query(Category).filter_by(category_id=category_id).one()
             except NoResultFound:
                 flash("The requested category could not be found!")
                 return redirect("/feed",code=302)
