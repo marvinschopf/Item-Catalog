@@ -110,22 +110,34 @@ session = DBSession()
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return(render_template("error.html", error=404,login_session=login_session), 404)
+    return(render_template("error.html",
+                           error=404,
+                           login_session=login_session),
+           404)
 
 
 @app.errorhandler(410)
 def page_gone(e):
-    return(render_template("error.html", error=410,login_session=login_session), 410)
+    return(render_template("error.html",
+                           error=410,
+                           login_session=login_session),
+           410)
 
 
 @app.errorhandler(403)
 def page_forbidden(e):
-    return(render_template("error.html", error=403,login_session=login_session), 403)
+    return(render_template("error.html",
+                           error=403,
+                           login_session=login_session),
+           403)
 
 
 @app.errorhandler(500)
 def page_server_error(e):
-    return(render_template("error.html", error=500,login_session=login_session), 500)
+    return(render_template("error.html",
+                           error=500,
+                           login_session=login_session),
+           500)
 
 
 @app.route("/")
@@ -135,14 +147,19 @@ def page_server_error(e):
 def index():
     latest = session.query(Item).order_by(desc(Item.id)).limit(10)
     categories = session.query(Category).order_by(Category.id)
-    return render_template("feed.html",latest=latest,categories=categories,login_session=login_session)
+    return render_template("feed.html",
+                           latest=latest,
+                           categories=categories,
+                           login_session=login_session)
 
 
 @app.route("/users/list")
 @app.route("/users/list/index")
 def userlist():
     users = session.query(User).all()
-    return render_template("userlist.html", users=users,login_session=login_session)
+    return render_template("userlist.html",
+                           users=users,
+                           login_session=login_session)
 
 
 @app.route("/api/categories.json")
@@ -157,7 +174,9 @@ def categoriesJson():
 def getCategoryAPI(category_id):
     Catalog = session.query(Category).filter_by(id=category_id).one()
     CatalogItems = session.query(Item).filter_by(category_id=category_id)
-    return jsonify(Meta=Catalog.serialize,Items=[i.serialize for i in CatalogItems])
+    return jsonify(Meta=Catalog.serialize,
+                   Items=[i.serialize for i in CatalogItems])
+
 
 @app.route("/api/item/<int:item_id>.json")
 @app.route("/api/item/<int:item_id>")
@@ -165,61 +184,91 @@ def getItemAPI(item_id):
     SItem = session.query(Item).filter_by(id=item_id).one()
     return jsonify(SItem.serialize)
 
+
 @app.route("/category/<int:category_id>")
 @app.route("/category/<int:category_id>/index")
 def showCategory(category_id):
-    try:    
+    try:
         Items = session.query(Item).filter_by(category_id=category_id)
         CategoryMeta = session.query(Category).filter_by(id=category_id).one()
     except NoResultFound:
-        return render_template("page.html",content="No results found!",login_session=login_session)
+        return render_template("page.html",
+                               content="No results found!",
+                               login_session=login_session)
     else:
-        return render_template("category.html", items=Items, category=CategoryMeta, login_session=login_session)
+        return render_template("category.html",
+                               items=Items,
+                               category=CategoryMeta,
+                               login_session=login_session)
 
 
 @app.route("/category/<int:category_id>/<int:item_id>")
 @app.route("/category/<int:category_id>/<int:item_id>/index")
-def showItem(category_id,item_id):
+def showItem(category_id, item_id):
     try:
-        SearchedItem = session.query(Item).filter_by(category_id=category_id,id=item_id).one()
+        SearchedItem = session.query(Item).filter_by(
+            category_id=category_id, id=item_id).one()
     except NoResultFound:
-        return render_template("page.html",content="No results found!",login_session=login_session)
+        return render_template("page.html",
+                               content="No results found!",
+                               login_session=login_session)
     else:
-        return render_template("item.html",item=SearchedItem,login_session=login_session)
+        return render_template("item.html",
+                               item=SearchedItem,
+                               login_session=login_session)
+
 
 @app.route("/category/<int:category_id>/<int:item_id>/edit")
 @app.route("/category/<int:category_id>/<int:item_id>/edit/index")
 @app.route("/category/<int:category_id>/<int:item_id>/index/edit")
 @app.route("/category/<int:category_id>/<int:item_id>/index/edit/index")
-def editItem(category_id,item_id,methods=["POST","GET"]):
+def editItem(category_id, item_id, methods=["POST", "GET"]):
     try:
-        SearchedItem = session.query(Item).filter_by(category_id=category_id,id=item_id).one()
+        SearchedItem = session.query(Item).filter_by(
+            category_id=category_id, id=item_id).one()
     except NoResultFound:
-        return render_template("page.html",content="Requested Item not found!",login_session=login_session)
+        return render_template("page.html",
+                               content="Requested Item not found!",
+                               login_session=login_session)
     else:
         if(login_session["user_id"] == SearchedItem.user_id):
             if(request.method == "POST" or request.method == "post"):
                 if(request.form["name"] and request.form["description"]):
                     SearchedItem.name = html.escape(request.form["name"])
-                    SearchedItem.description = html.escape(request.form["description"])
-                    return redirect("/category/"+str(category_id)+"/"+str(item_id),code=302)
+                    SearchedItem.description = html.escape(
+                        request.form["description"])
+                    return redirect("/categor"
+                                    "y/"+str(category_id)+"/"+str(item_id),
+                                    code=302)
                 else:
-                    return render_template("page.html",content="Not all required data has been submitted!",login_session=login_session)
+                    return render_template("page.html",
+                                           content="Not all required data"
+                                           " has been submitted!",
+                                           login_session=login_session)
             else:
-                return render_template("edit-item.html",item=SearchedItem,login_session=login_session)
+                return render_template("edit-item.html",
+                                       item=SearchedItem,
+                                       login_session=login_session)
         else:
-            return render_template("page.html",content="This is not your item!",login_session=login_session)
+            return render_template("page.html",
+                                   content="This is not your item!",
+                                   login_session=login_session)
+
 
 @app.route('/login')
 @app.route("/login/index")
 def showLogin():
-    return render_template('login.html', ls=login_session, login_session=login_session)
+    return render_template('login.html',
+                           ls=login_session,
+                           login_session=login_session)
 
 
 @app.route("/login/loggedin")
 @app.route("/login/loggedin/index")
 def showLoggedIn():
-    return render_template("loggedin.html", ls=login_session, login_session=login_session)
+    return render_template("loggedin.html",
+                           ls=login_session,
+                           login_session=login_session)
 
 
 @app.route('/login/google')
@@ -257,7 +306,9 @@ def githubAuthorized():
     try:
         resp = github.authorized_response()
     except OAuthException:
-        return render_template("page.html", content="An error occured while authorizing with GitHub!")
+        return render_template("page.html",
+                               content="An error occured while authori"
+                               "zing with GitHub!")
     if resp is None or resp.get('access_token') is None:
         return 'Access denied: reason=%s error=%s resp=%s' % (
             request.args['error'],
@@ -269,10 +320,12 @@ def githubAuthorized():
     login_session["provider"] = "github"
     login_session["email"] = "github-"+me.data["login"]+"@users.item-catalog"
     if(me.data["email"] is None):
-        login_session["email"] = "github-"+me.data["login"]+"@users.item-catalog"
+        login_session["email"] = "github-" + \
+            me.data["login"]+"@users.item-catalog"
     else:
         if(len(me.data["email"]) < 1):
-            login_session["email"] = "github-"+me.data["login"]+"@users.item-catalog"
+            login_session["email"] = "github-" + \
+                me.data["login"]+"@users.item-catalog"
         else:
             login_session["email"] = me.data["email"]
 
@@ -281,7 +334,7 @@ def githubAuthorized():
     login_session["picture"] = me.data["avatar_url"]
     login_session["user_id"] = checkUser(login_session)
     return redirect("/login/loggedin", code=302)
-    #return jsonify(me.data)
+    # return jsonify(me.data)
 
 
 @app.route('/login/facebook/authorized')
@@ -290,7 +343,9 @@ def facebookAuthorized():
     try:
         resp = facebook.authorized_response()
     except OAuthException:
-        return render_template("page.html", content="An error occured while authorizing with Facebook!")
+        return render_template("page.html",
+                               content="An error occured while "
+                               "authorizing with Facebook!")
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
@@ -308,7 +363,8 @@ def facebookAuthorized():
     try:
         me.data["email"]
     except KeyError:
-        login_session["email"] = "facebook-"+me.data["id"]+"@users.item-catalog"
+        login_session["email"] = "facebook-" + \
+            me.data["id"]+"@users.item-catalog"
     else:
         login_session["email"] = me.data["email"]
 
@@ -331,7 +387,8 @@ def googleAuthorized():
     try:
         resp = google.authorized_response()
     except OAuthException:
-        return render_template("page.html", content="Cannot authorize with Google!")
+        return render_template("page.html",
+                               content="Cannot authorize with Google!")
     if resp is None:
         return 'Access denied: reason=%s error=%s' % (
             request.args['error_reason'],
