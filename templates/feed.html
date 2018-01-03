@@ -9,7 +9,7 @@
 			<h2>Categories</h2>
 			<ul>
 			{% for cat in categories %}
-				<li><a href="/category/{{ cat.name }}">{{ cat.name }}</a></li>
+				<li><a href="/category/{{ cat.id }}">{{ cat.name }}</a></li>
 			{% endfor %}
 			</ul>
 		</div>
@@ -17,7 +17,7 @@
 			<h2>Latest Items</h2>
 			<ul>
 				{% for item in latest %}
-					<li><a href="/category/{{ item.category.name }}/{{ item.name }}"><b>{{ item.name }}</b> <i>({{ item.category.name }})</i></a></li>
+					<li><a href="/category/{{ item.category.id }}/{{ item.id }}"><b>{{ item.name }}</b> <i>({{ item.category.name }})</i></a></li>
 				{% endfor %}
 			</ul>
 		</div>
