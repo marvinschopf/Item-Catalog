@@ -133,14 +133,14 @@ def page_server_error(e):
 def index():
     latest = session.query(Item).order_by(desc(Item.id)).limit(10)
     categories = session.query(Category).order_by(Category.id)
-    return render_template("feed.html",latest=latest,categories=categories)
+    return render_template("feed.html",latest=latest,categories=categories,login_session=login_session)
 
 
 @app.route("/users/list")
 @app.route("/users/list/index")
 def userlist():
     users = session.query(User).all()
-    return render_template("userlist.html", users=users)
+    return render_template("userlist.html", users=users,login_session=login_session)
 
 
 @app.route("/api/categories.json")
