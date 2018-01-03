@@ -330,8 +330,8 @@ def newItem(category_id):
                 return redirect("/feed", code=302)
             else:
                 return render_template("new-item.html",
-                    category=Cat,
-                    login_session=login_session)
+                                       category=Cat,
+                                       login_session=login_session)
         else:
             flash("You are not logged in!")
             return redirect("/category/"+str(category_id), code=302)
