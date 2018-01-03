@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from flask import Flask, render_template, request
 from flask import redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc, desc
@@ -361,14 +363,14 @@ def createCategory():
         return redirect("/feed", code=302)
 
 
-@app.route("/category/<int:category_id>/edit", methods=["POST","GET"])
-@app.route("/category/<int:category_id>/edit/index", methods=["POST","GET"])
+@app.route("/category/<int:category_id>/edit", methods=["POST", "GET"])
+@app.route("/category/<int:category_id>/edit/index", methods=["POST", "GET"])
 def editCategory(category_id):
     try:
         Cat = session.query(Category).filter_by(id=category_id).one()
     except NoResultFound:
         flash("This category does not exist!")
-        return redirect("/feed",code=302)
+        return redirect("/feed", code=302)
     else:
         if(isLoggedIn(login_session)):
             if(request.method == "POST"):
@@ -378,15 +380,18 @@ def editCategory(category_id):
                     session.add(Cat)
                     session.commit()
                     flash("The category has been edited!")
-                    return redirect("/category/"+str(category_id),code=302)
+                    return redirect("/category/"+str(category_id), code=302)
                 else:
                     flash("Please submit the required data!")
-                    return redirect("/category/"+str(category_id)+"/edit",code=302)
+                    return redirect("/category/"+str(category_id)+"/edit",
+                                    code=302)
             else:
-                return render_template("edit-category.html",login_session=login_session,category=Cat)
+                return render_template("edit-category.html",
+                                       login_session=login_session,
+                                       category=Cat)
         else:
             flash("You are not logged in!")
-            return redirect("/category/"+str(category_id)+"/edit",code=302)
+            return redirect("/category/"+str(category_id)+"/edit", code=302)
 
 
 @app.route("/category/<int:category_id>/delete")
@@ -396,7 +401,7 @@ def deleteCategory(category_id):
         Cat = session.query(Category).filter_by(id=category_id).one()
     except NoResultFound:
         flash("The requested category can't be found!")
-        return redirect("/feed",code=302)
+        return redirect("/feed", code=302)
     else:
         if(isLoggedIn(login_session)):
             Items = session.query(Item).filter_by(category_id=category_id)
@@ -405,10 +410,10 @@ def deleteCategory(category_id):
             session.delete(Cat)
             session.commit()
             flash("The category has been deleted!")
-            return redirect("/feed",code=302)
+            return redirect("/feed", code=302)
         else:
             flash("You are not logged in!")
-            return redirect("/category/"+str(category_id),code=302)
+            return redirect("/category/"+str(category_id), code=302)
 
 
 @app.route('/login')
