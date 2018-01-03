@@ -180,7 +180,7 @@ def showCategory(category_id):
 @app.route("/category/<int:category_id>/<int:item_id>/index")
 def showItem(category_id,item_id):
     try:
-        SearchedItem = session.query(Item).filter_by(category_id=category_id,id=item_id)
+        SearchedItem = session.query(Item).filter_by(category_id=category_id,id=item_id).one()
     except NoResultFound:
         return render_template("page.html",content="No results found!",login_session=login_session)
     else:
