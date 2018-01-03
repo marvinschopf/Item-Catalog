@@ -167,13 +167,13 @@ def getItemAPI(item_id):
 @app.route('/login')
 @app.route("/login/index")
 def showLogin():
-    return render_template('login.html', ls=login_session)
+    return render_template('login.html', ls=login_session, login_session=login_session)
 
 
 @app.route("/login/loggedin")
 @app.route("/login/loggedin/index")
 def showLoggedIn():
-    return render_template("loggedin.html", ls=login_session)
+    return render_template("loggedin.html", ls=login_session, login_session=login_session)
 
 
 @app.route('/login/google')
