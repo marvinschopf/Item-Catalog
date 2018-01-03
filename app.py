@@ -232,19 +232,14 @@ def editItem(category_id, item_id):
                                login_session=login_session)
     else:
         if(login_session["user_id"] == SearchedItem.user_id):
-            if(request.method == "POST" or request.method == "post"):
-                if(request.form["name"] and request.form["description"]):
-                    SearchedItem.name = html.escape(request.form["name"])
-                    SearchedItem.description = html.escape(
-                        request.form["description"])
-                    session.add(SearchedItem)
-                    session.commit()
-                    return redirect("/category/"+str(category_id)+"/"+str(item_id),code=302)
-                else:
-                    return render_template("page.html",
-                                           content="Not all required data"
-                                           " has been submitted!",
-                                           login_session=login_session)
+            if(request.method == "POST"):
+                if(request.form["name"]):
+                    SearchedItem.name = request.form["name"]
+                if(request.form["description"]):
+                    SearchedItem.description = request.form["description"]
+                session.add(SearchedItem)
+                session.commit()
+                return redirect("/category/"+str(category_id)+"/"+str(item_id),code=302)
             else:
                 return render_template("edit-item.html",
                                        item=SearchedItem,
