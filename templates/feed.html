@@ -7,6 +7,9 @@
 	<div class="row">
 		<div class="col">
 			<h2>Categories</h2>
+            {% if login_session["token"] %}
+            <a href="/category/new">Create</a>
+            {% endif %}
 			<ul>
 			{% for cat in categories %}
 				<li><a href="/category/{{ cat.id }}">{{ cat.name }}</a></li>
