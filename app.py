@@ -493,7 +493,12 @@ def googleAuthorized():
             login_session["email"] = me.data["email"]
 
     login_session["username"] = me.data["name"]
-    login_session["link"] = me.data["link"]
+    try:
+        login_session["link"]
+    except KeyError:
+        login_session["link"] = "#"
+    else:
+        login_session["link"] = me.data["link"]
     login_session["picture"] = me.data["picture"]
     login_session["user_id"] = checkUser(login_session)
     return redirect("/login/loggedin", code=302)
