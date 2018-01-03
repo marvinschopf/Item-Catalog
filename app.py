@@ -199,7 +199,7 @@ def getItemAPI(item_id):
 @app.route("/category/<int:category_id>/index")
 def showCategory(category_id):
     try:
-        Items = session.query(Item).filter_by(category_id=category_id)
+        Items = session.query(Item).filter_by(category_id=category_id).order_by(Item.id)
         CategoryMeta = session.query(Category).filter_by(id=category_id).one()
     except NoResultFound:
         flash("The requested item was not found!")
