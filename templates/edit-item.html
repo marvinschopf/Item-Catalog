@@ -1,16 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Edit "{{ item.title }}"</h2>
+<h2>Edit "{{ item.name }}"</h2>
 <div class="container">
 	<form action="" method="POST">
 		<div class="form-group">
+			<label for="title"><b>Name:</b></label>
 			<input type="text" class="form-text form-control" name="title" id="title" value="{{ item.name }}" required>
-			<label for="title">Name</label>
 		</div>
-		<hr>
 		<div class="form-group">
+			<label for="description"><b><i>Description:</i></b></label>
 			<textarea id="description" name="description" class="md-textarea form-control" required>{{ item.description }}</textarea>
-			<label for="description">Description</label>
 		</div>
 		<input type="submit" class="btn btn-primary" value="Edit">
 	</form>
