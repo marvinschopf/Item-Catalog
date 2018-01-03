@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+{% if category and items %}
+<h2>{{ category.name }}</h2>
+<b>Description:</b>
+<p>{{ category.description }}</p>
+<hr>
+<h3>Items:</h3>
+<ul>
+{% for item in items %}
+	<li><a href="/category/{{ category.id }}/{{ item.id }}">{{ item.name }}</a></li>
+{% endfor %}
+</ul>
+{% else %}
+<h2>Unknown category</h2>
+{% endif %}
+{% endblock %}
