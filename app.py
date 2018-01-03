@@ -389,6 +389,28 @@ def editCategory(category_id):
             return redirect("/category/"+str(category_id)+"/edit",code=302)
 
 
+@app.route("/category/<int:category_id>/delete")
+@app.route("/category/<int:category_id>/delete/index")
+def deleteCategory(category_id):
+    try:
+        Cat = session.query(Category).filter_by(id=category_id).one()
+    except NoResultFound:
+        flash("The requested category can't be found!")
+        return redirect("/feed",code=302)
+    else:
+        if(isLoggedIn(login_session)):
+            Items = session.query(Item).filter_by(category_id=category_id)
+            for i in Items:
+                session.delete(i)
+            session.delete(Cat)
+            session.commit()
+            flash("The category has been deleted!")
+            return redirect("/feed",code=302)
+        else:
+            flash("You are not logged in!")
+            return redirect("/category/"+str(category_id),code=302)
+
+
 @app.route('/login')
 @app.route("/login/index")
 def showLogin():
