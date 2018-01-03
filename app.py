@@ -204,11 +204,11 @@ def editItem(category_id,item_id):
                     SearchedItem.description = html.escape(request.form["description"])
                     return redirect("/category/"+str(category_id)+"/"+str(item_id),code=302)
                 else:
-                    return render_template("page.html",content="Not all required data has been submitted!")
+                    return render_template("page.html",content="Not all required data has been submitted!",login_session=login_session)
             else:
-                return render_template("edit-item.html",item=SearchedItem)
+                return render_template("edit-item.html",item=SearchedItem,login_session=login_session)
         else:
-            return render_template("page.html",content="This is not your item!")
+            return render_template("page.html",content="This is not your item!",login_session=login_session)
 
 @app.route('/login')
 @app.route("/login/index")
