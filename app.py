@@ -247,7 +247,7 @@ def githubAuthorized():
         login_session["email"] = ""
     else:
         if(len(me.data["email"]) < 1):
-            login_session["email"] = ""
+            login_session["email"] = "github-"+me.data["username"]+"@users.item-catalog"
         else:
             login_session["email"] = me.data["email"]
 
@@ -282,7 +282,7 @@ def facebookAuthorized():
     try:
         me.data["email"]
     except KeyError:
-        login_session["email"] = ""
+        login_session["email"] = "facebook-"+me.data["id"]+"@users.item-catalog"
     else:
         login_session["email"] = me.data["email"]
 
@@ -374,6 +374,7 @@ def logout():
         del login_session["provider"]
         del login_session["picture"]
         del login_session["link"]
+        del login_session["email"]
         flash("You have been logged out!")
         return redirect(url_for("showLogin"), code=302)
     else:
