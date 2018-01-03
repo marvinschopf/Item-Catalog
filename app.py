@@ -167,7 +167,7 @@ def getItemAPI(item_id):
 @app.route("/category/<int:category_id>/index")
 def showCategory(category_id):
     Items = session.query(Item).filter_by(category_id=category_id)
-    CategoryMeta = session.query(Category).filter_by(id=category_id)
+    CategoryMeta = session.query(Category).filter_by(id=category_id).one()
     return render_template("category.html", items=Items, category=CategoryMeta, login_session=login_session)
 
 
