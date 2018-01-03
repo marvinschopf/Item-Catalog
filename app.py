@@ -243,21 +243,21 @@ def githubAuthorized():
     login_session["token"] = (resp['access_token'], '')
     me = github.get('user')
     login_session["provider"] = "github"
-    login_session["email"] = "github-"+""+"@users.item-catalog"
-    #if(me.data["email"] is None):
-        #login_session["email"] = ""
-    #else:
-        #if(len(me.data["email"]) < 1):
-            
-        #else:
-            #login_session["email"] = me.data["email"]
+    login_session["email"] = "github-"+me.data["login"]+"@users.item-catalog"
+    if(me.data["email"] is None):
+        login_session["email"] = "github-"+me.data["login"]+"@users.item-catalog"
+    else:
+        if(len(me.data["email"]) < 1):
+            login_session["email"] = "github-"+me.data["login"]+"@users.item-catalog"
+        else:
+            login_session["email"] = me.data["email"]
 
     login_session["username"] = me.data["name"]
     login_session["link"] = me.data["html_url"]
     login_session["picture"] = me.data["avatar_url"]
     login_session["user_id"] = checkUser(login_session)
-    #return redirect("/login/loggedin", code=302)
-    return jsonify(me.data)
+    return redirect("/login/loggedin", code=302)
+    #return jsonify(me.data)
 
 
 @app.route('/login/facebook/authorized')
