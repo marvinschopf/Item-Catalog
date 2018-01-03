@@ -266,6 +266,7 @@ def deleteItem(category_id, item_id):
         return redirect("/feed", code=302)
     else:
         session.delete(DeletedItem)
+        session.commit()
         flash("The item has been deleted!")
         return redirect("/category/"+str(category_id), code=302)
 
