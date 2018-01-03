@@ -3,7 +3,7 @@
 {% if category and items %}
 <h2>{{ category.name }}</h2>
 {% if login_session["token"] %}
-<a href="/category/{{ category.id }}/new">Create new item</a><br>
+<a href="/category/{{ category.id }}/delete">Delete</a> <b>|</b> <a href="/category/{{ category.id }}/edit">Edit</a> <b>|</b> <a href="/category/{{ category.id }}/new">Create new item</a><br>
 {% endif %}
 <b>Description:</b>
 <p>{{ category.description }}</p>
