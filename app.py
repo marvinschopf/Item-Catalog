@@ -253,6 +253,23 @@ def editItem(category_id, item_id):
                             code=302)
 
 
+@app.route("/category/<int:category_id>/<int:item_id>/delete")
+@app.route("/category/<int:category_id>/<int:item_id>/delete/index")
+@app.route("/category/<int:category_id>/<int:item_id>/index/delete")
+@app.route("/category/<int:category_id>/<int:item_id>/index/delete/index")
+def deleteItem(category_id, item_id):
+    try:
+        DeletedItem = session.query(Item).filter_by(
+            category_id=category_id, id=item_id).one()
+    except NoResultFound:
+        flash("The requested item could not be found!")
+        return redirect("/feed", code=302)
+    else:
+        session.delete(DeletedItem)
+        flash("The item has been deleted!")
+        return redirect("/category/"+str(category_id), code=302)
+
+
 @app.route('/login')
 @app.route("/login/index")
 def showLogin():
