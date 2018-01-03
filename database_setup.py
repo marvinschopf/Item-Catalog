@@ -41,6 +41,7 @@ class Item(Base):
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
     created = Column(DateTime, default=datetime.datetime.utcnow)
+    description = Column(String, nullable=True)
 
     @property
     def serialize(self):
