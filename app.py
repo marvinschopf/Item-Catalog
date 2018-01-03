@@ -336,25 +336,29 @@ def newItem(category_id):
             flash("You are not logged in!")
             return redirect("/category/"+str(category_id), code=302)
 
-@app.route("/category/new", methods=["POST","GET"])
-@app.route("/category/new/index",methods=["POST","GET"])
+
+@app.route("/category/new", methods=["POST", "GET"])
+@app.route("/category/new/index", methods=["POST", "GET"])
 def createCategory():
     if(isLoggedIn(login_session)):
         if(request.method == "POST"):
             if request.form["name"] and request.form["description"]:
-                NewCat = Category(name=request.form["name"],description=request.form["description"])
+                NewCat = Category(name=request.form[
+                                  "name"],
+                                  description=request.form["description"])
                 session.add(NewCat)
                 session.commit()
                 flash("The category has been created!")
-                return redirect("/category/"+NewCat.id,code=302)
+                return redirect("/category/"+NewCat.id, code=302)
             else:
                 flash("Please submit all the required data!")
-                return redirect("/category/new", code=302) 
+                return redirect("/category/new", code=302)
         else:
-            return render_template("new-category.html",login_session=login_session)
+            return render_template("new-category.html",
+                                   login_session=login_session)
     else:
         flash("You are not logged in!")
-        return redirect("/feed",code=302)
+        return redirect("/feed", code=302)
 
 
 @app.route('/login')
