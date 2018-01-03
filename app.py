@@ -108,22 +108,22 @@ session = DBSession()
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return(render_template("error.html", error=404), 404)
+    return(render_template("error.html", error=404,login_session=login_session), 404)
 
 
 @app.errorhandler(410)
 def page_gone(e):
-    return(render_template("error.html", error=410), 410)
+    return(render_template("error.html", error=410,login_session=login_session), 410)
 
 
 @app.errorhandler(403)
 def page_forbidden(e):
-    return(render_template("error.html", error=403), 403)
+    return(render_template("error.html", error=403,login_session=login_session), 403)
 
 
 @app.errorhandler(500)
 def page_server_error(e):
-    return(render_template("error.html", error=500), 500)
+    return(render_template("error.html", error=500,login_session=login_session), 500)
 
 
 @app.route("/")
