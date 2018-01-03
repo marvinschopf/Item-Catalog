@@ -349,7 +349,7 @@ def createCategory():
                 session.add(NewCat)
                 session.commit()
                 flash("The category has been created!")
-                return redirect("/category/"+NewCat.id, code=302)
+                return redirect("/category/"+str(NewCat.id), code=302)
             else:
                 flash("Please submit all the required data!")
                 return redirect("/category/new", code=302)
