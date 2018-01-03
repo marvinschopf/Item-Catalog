@@ -282,7 +282,7 @@ def newItem(category_id):
     if(request.method == "POST"):
         if(login_session["token"]):
             if request.form["name"] and request.form["description"]:
-                NewItem = Item(name=request.form["name"],description=request.form["description"],user_id=login_session["user_id"])
+                NewItem = Item(name=request.form["name"],description=request.form["description"],user_id=login_session["user_id"],category_id=category_id)
                 session.add(NewItem)
                 session.commit()
                 flash("Your new item has been created!")
