@@ -426,10 +426,13 @@ def showLogin():
 @app.route("/login/loggedin")
 @app.route("/login/loggedin/index")
 def showLoggedIn():
-    return render_template("loggedin.html",
-                           ls=login_session,
-                           login_session=login_session)
-
+    # return render_template("loggedin.html",
+                           # ls=login_session,
+                           # login_session=login_session)
+    flash("You have been"\
+          " logged in!")
+    return redirect("/feed",
+                    code=302)
 
 @app.route('/login/google')
 @app.route('/login/google/index')
