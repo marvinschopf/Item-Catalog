@@ -85,13 +85,15 @@ facebook = oauth.remote_app(
 
 
 # <UTIL>
-def isLoggedIn(ls):
-    try:
-        ls["token"]
-    except KeyError:
-        return False
-    else:
-        return True
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' in login_session:
+            return f(*args, **kwargs)
+        else:
+            flash(“You are not allowed to access there")
+            return redirect('/login')
+    return decorated_function
 
 # OAUTH helper functions
 
@@ -236,6 +238,7 @@ def showItem(category_id, item_id):
            methods=["POST", "GET"])
 @app.route("/category/<int:category_id>/<int:item_id>/index/edit/index",
            methods=["POST", "GET"])
+@login_required
 def editItem(category_id, item_id):
     try:
         SearchedItem = session.query(Item).filter_by(
@@ -244,29 +247,24 @@ def editItem(category_id, item_id):
         flash("The requested item can't be found!")
         return redirect("/", code=302)
     else:
-        if(isLoggedIn(login_session)):
-            if(login_session["user_id"] == SearchedItem.user_id):
-                if(request.method == "POST"):
-                    if(request.form["name"]):
-                        SearchedItem.name = request.form["name"]
-                    if(request.form["description"]):
-                        SearchedItem.description = request.form["description"]
-                    session.add(SearchedItem)
-                    session.commit()
-                    flash("The item has been edited!")
-                    return redirect("/category/" +
-                                    str(category_id)+"/"+str(item_id),
-                                    code=302)
-                else:
-                    return render_template("edit-item.html",
-                                           item=SearchedItem,
-                                           login_session=login_session)
-            else:
-                flash("This is not your item!")
-                return redirect("/category/"+str(category_id)+"/"+str(item_id),
+        if(login_session["user_id"] == SearchedItem.user_id):
+            if(request.method == "POST"):
+                if(request.form["name"]):
+                    SearchedItem.name = request.form["name"]
+                if(request.form["description"]):
+                    SearchedItem.description = request.form["description"]
+                session.add(SearchedItem)
+                session.commit()
+                flash("The item has been edited!")
+                return redirect("/category/" +
+                                str(category_id)+"/"+str(item_id),
                                 code=302)
+            else:
+                return render_template("edit-item.html",
+                                       item=SearchedItem,
+                                       login_session=login_session)
         else:
-            flash("You are not logged in!")
+            flash("This is not your item!")
             return redirect("/category/"+str(category_id)+"/"+str(item_id),
                             code=302)
 
@@ -275,6 +273,7 @@ def editItem(category_id, item_id):
 @app.route("/category/<int:category_id>/<int:item_id>/delete/index")
 @app.route("/category/<int:category_id>/<int:item_id>/index/delete")
 @app.route("/category/<int:category_id>/<int:item_id>/index/delete/index")
+@login_required
 def deleteItem(category_id, item_id):
     try:
         DeletedItem = session.query(Item).filter_by(
@@ -283,17 +282,12 @@ def deleteItem(category_id, item_id):
         flash("The requested item could not be found!")
         return redirect("/feed", code=302)
     else:
-        if(isLoggedIn(login_session)):
-            if(login_session["user_id"] == DeletedItem.user_id):
-                session.delete(DeletedItem)
-                session.commit()
-                flash("The item has been deleted!")
-                return redirect("/category/"+str(category_id),
-                                code=302)
-            else:
-                flash("You are not authorized!")
-                return redirect("/category/"+str(category_id)+"/"+str(item_id),
-                                code=302)
+        if(login_session["user_id"] == DeletedItem.user_id):
+            session.delete(DeletedItem)
+            session.commit()
+            flash("The item has been deleted!")
+            return redirect("/category/"+str(category_id),
+                            code=302)
         else:
             flash("You are not authorized!")
             return redirect("/category/"+str(category_id)+"/"+str(item_id),
@@ -302,68 +296,59 @@ def deleteItem(category_id, item_id):
 
 @app.route("/category/<int:category_id>/new", methods=["POST", "GET"])
 @app.route("/category/<int:category_id>/new/index", methods=["POST", "GET"])
+@login_required
 def newItem(category_id):
     if(request.method == "POST"):
-        if(isLoggedIn(login_session)):
-            if request.form["name"] and request.form["description"]:
-                NewItem = Item(name=request.form["name"],
-                               description=request.form["description"],
-                               user_id=login_session["user_id"],
-                               category_id=category_id)
-                session.add(NewItem)
-                session.commit()
-                flash("Your new item has been created!")
-                return redirect("/category/" +
-                                str(category_id)+"/"+str(NewItem.id),
-                                code=302)
-            else:
-                flash("Please submit all the required data!")
-                return redirect("/category/"+str(category_id)+"/new", code=302)
+        if request.form["name"] and request.form["description"]:
+            NewItem = Item(name=request.form["name"],
+                           description=request.form["description"],
+                           user_id=login_session["user_id"],
+                           category_id=category_id)
+            session.add(NewItem)
+            session.commit()
+            flash("Your new item has been created!")
+            return redirect("/category/" +
+                            str(category_id)+"/"+str(NewItem.id),
+                            code=302)
         else:
-            flash("You are not logged in!")
-            return redirect("/category/"+str(category_id), code=302)
+            flash("Please submit all the required data!")
+            return redirect("/category/"+str(category_id)+"/new", code=302)
     else:
-        if(isLoggedIn(login_session)):
-            try:
-                Cat = session.query(Category).filter_by(id=category_id).one()
-            except NoResultFound:
-                flash("The requested category could not be found!")
-                return redirect("/feed", code=302)
-            else:
-                return render_template("new-item.html",
-                                       category=Cat,
-                                       login_session=login_session)
+        try:
+            Cat = session.query(Category).filter_by(id=category_id).one()
+        except NoResultFound:
+            flash("The requested category could not be found!")
+            return redirect("/feed", code=302)
         else:
-            flash("You are not logged in!")
-            return redirect("/category/"+str(category_id), code=302)
+            return render_template("new-item.html",
+                                   category=Cat,
+                                   login_session=login_session)
 
 
 @app.route("/category/new", methods=["POST", "GET"])
 @app.route("/category/new/index", methods=["POST", "GET"])
+@login_required
 def createCategory():
-    if(isLoggedIn(login_session)):
-        if(request.method == "POST"):
-            if request.form["name"] and request.form["description"]:
-                NewCat = Category(name=request.form[
-                                  "name"],
-                                  description=request.form["description"])
-                session.add(NewCat)
-                session.commit()
-                flash("The category has been created!")
-                return redirect("/category/"+str(NewCat.id), code=302)
-            else:
-                flash("Please submit all the required data!")
-                return redirect("/category/new", code=302)
+    if(request.method == "POST"):
+        if request.form["name"] and request.form["description"]:
+            NewCat = Category(name=request.form[
+                              "name"],
+                              description=request.form["description"])
+            session.add(NewCat)
+            session.commit()
+            flash("The category has been created!")
+            return redirect("/category/"+str(NewCat.id), code=302)
         else:
-            return render_template("new-category.html",
-                                   login_session=login_session)
+            flash("Please submit all the required data!")
+            return redirect("/category/new", code=302)
     else:
-        flash("You are not logged in!")
-        return redirect("/feed", code=302)
+        return render_template("new-category.html",
+                               login_session=login_session)
 
 
 @app.route("/category/<int:category_id>/edit", methods=["POST", "GET"])
 @app.route("/category/<int:category_id>/edit/index", methods=["POST", "GET"])
+@login_required
 def editCategory(category_id):
     try:
         Cat = session.query(Category).filter_by(id=category_id).one()
@@ -371,30 +356,27 @@ def editCategory(category_id):
         flash("This category does not exist!")
         return redirect("/feed", code=302)
     else:
-        if(isLoggedIn(login_session)):
-            if(request.method == "POST"):
-                if request.form["name"] and request.form["description"]:
-                    Cat.name = request.form["name"]
-                    Cat.description = request.form["description"]
-                    session.add(Cat)
-                    session.commit()
-                    flash("The category has been edited!")
-                    return redirect("/category/"+str(category_id), code=302)
-                else:
-                    flash("Please submit the required data!")
-                    return redirect("/category/"+str(category_id)+"/edit",
-                                    code=302)
+        if(request.method == "POST"):
+            if request.form["name"] and request.form["description"]:
+                Cat.name = request.form["name"]
+                Cat.description = request.form["description"]
+                session.add(Cat)
+                session.commit()
+                flash("The category has been edited!")
+                return redirect("/category/"+str(category_id), code=302)
             else:
-                return render_template("edit-category.html",
-                                       login_session=login_session,
-                                       category=Cat)
+                flash("Please submit the required data!")
+                return redirect("/category/"+str(category_id)+"/edit",
+                                code=302)
         else:
-            flash("You are not logged in!")
-            return redirect("/category/"+str(category_id)+"/edit", code=302)
+            return render_template("edit-category.html",
+                                   login_session=login_session,
+                                   category=Cat)
 
 
 @app.route("/category/<int:category_id>/delete")
 @app.route("/category/<int:category_id>/delete/index")
+@login_required
 def deleteCategory(category_id):
     try:
         Cat = session.query(Category).filter_by(id=category_id).one()
@@ -402,17 +384,13 @@ def deleteCategory(category_id):
         flash("The requested category can't be found!")
         return redirect("/feed", code=302)
     else:
-        if(isLoggedIn(login_session)):
-            Items = session.query(Item).filter_by(category_id=category_id)
-            for i in Items:
-                session.delete(i)
-            session.delete(Cat)
-            session.commit()
-            flash("The category has been deleted!")
-            return redirect("/feed", code=302)
-        else:
-            flash("You are not logged in!")
-            return redirect("/category/"+str(category_id), code=302)
+        Items = session.query(Item).filter_by(category_id=category_id)
+        for i in Items:
+            session.delete(i)
+        session.delete(Cat)
+        session.commit()
+        flash("The category has been deleted!")
+        return redirect("/feed", code=302)
 
 
 @app.route('/login')
@@ -426,13 +404,10 @@ def showLogin():
 @app.route("/login/loggedin")
 @app.route("/login/loggedin/index")
 def showLoggedIn():
-    # return render_template("loggedin.html",
-                           # ls=login_session,
-                           # login_session=login_session)
-    flash("You have been"\
-          " logged in!")
+    flash("You have been logged in!")
     return redirect("/feed",
                     code=302)
+
 
 @app.route('/login/google')
 @app.route('/login/google/index')
