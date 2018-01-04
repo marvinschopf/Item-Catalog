@@ -1,4 +1,4 @@
-# Item-Catalog
+# Item-Catalog - v148 - 01/04/2018
 ## Usage
 1. Clone the repository to your computer
 2. Install the requirements specified in ```requirements.txt```.
