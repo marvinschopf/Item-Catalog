@@ -2,6 +2,7 @@
 
 from flask import Flask, render_template, request
 from flask import redirect, jsonify, url_for, flash
+from flask import wraps
 from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
