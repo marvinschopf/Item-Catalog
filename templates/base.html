@@ -64,6 +64,9 @@
             {% endif %}
           {% endwith %}
           </div>
+          {% if not login_session["token"] %}
+          <p><a href="/login">Please login!</a>
+          {% endif %}
           {% block content %}{% endblock %}
         </div>
     </body>
